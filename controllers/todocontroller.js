@@ -59,7 +59,7 @@ app.post('/upload', async function(req,res) {
 
   
   if( !req.files.file ) {
-    return res.redirect(403,'http://localhost:3000/error-upload');
+    return res.redirect(403,'../error-upload');
   }
   let archivo = req.files.file;
   //Guardamos el tipo de archivo para corroborar
