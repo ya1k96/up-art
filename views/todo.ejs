@@ -1,0 +1,48 @@
+<%- include('partials/header', {titulo: info.titulo}); %>
+    <div class="d-flex justify-content-center mt-4  ">
+      <h2 class="display-4 text-white">Articulos actualizados</h2>
+    </div>
+    <div class="row p-4">
+      <div class="offset-2 col-8">
+        <div class="bg-white p-2">
+          <table id="todo-table" class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>Codigo</th>
+                <th>Liquidado</th>
+                <th>Tipo articulo</th>
+                <th>Obs</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if(info.items.length > 0) { %>
+                <% for(var i = 0; i < info.items.length; i++) { %>
+                  <tr>
+                    <td><%= info.items[i].codigo %></td>
+                    <% if(!info.items[i].liquidado) { %>
+                      <td>Pendiente</td>
+                    <% }  %>
+                    <% if(info.items[i].liquidado) { %>
+                      <td>Aprobado</td>
+                    <% }  %>
+                    <td><%= info.items[i].tipoArticulo %></td>
+                    <td><%= info.items[i].observacion %></td>
+                  </tr>
+                <% } %>  
+              <% } %>                      
+
+
+            </tbody>
+          </table>
+     
+        </div>
+
+      </div>
+      <!-- <div class="col-5">
+        <form>
+          <input type="text" name="item" placeholder="Add new item..." required />
+          <button type="submit">Add Item</button>
+      </form>
+      </div> -->
+    </div>
+<%- include('partials/footer'); %>

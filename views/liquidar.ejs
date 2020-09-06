@@ -1,0 +1,54 @@
+<%- include('partials/header', {titulo: 'Subir'}); %>
+<div id="liquidarFlag">
+    <div class="d-flex justify-content-center mt-4">
+        <h2 class="display-4 text-white">Calcular liquidacion</h2>
+    </div>
+    <div class="row">
+        <div class="offset-3 col-4">
+            <div class="card bg-white p-4">
+                <span text-center><strong>Info gral</strong></span>
+                <pre>
+Articulos especiales: <%= data.especial %>
+Articulos normales: <%= data.normal %>
+Total articulos liquidados: <%= data.liquidado %>
+</pre>
+                <fieldset >
+                    <input id="espCant" type="hidden" value="<%= data.especial %>">
+                    <input id="normCant" type="hidden" value="<%= data.normal %>">
+                    <div class="form-group">
+                      <label for="cantidad">Cantidad a liquidar</label>
+                      <input type="number" maxlength="1000" minlength="1" min="1" max="1000" id="cantidad" value="0" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="select">Tipo de articulo</label>
+                      <select id="select" class="form-control">
+                        <option>Normal</option>
+                        <option>Especial</option>
+                      </select>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="check">
+                        <label class="form-check-label" for="disabledFieldsetCheck">
+                          Calcular todo
+                        </label>
+                      </div>
+                    <button class="btn btn-primary mt-2" id="calcular">Calcular</button>
+                  </fieldset>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="col-12">
+                <div class="card bg-white p-4">
+                    <div id="subTotNorm"><span>Subtotal: $0</span></div>
+                    <div id="subTotEsp"><span>Subtotal: $0</span></div>
+                    <hr>
+                    <div id="total"><span>Total: $0</span></div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer'); %>
