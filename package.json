@@ -21,10 +21,15 @@
   "dependencies": {
     "body-parser": "^1.17.2",
     "csvtojson": "^2.0.10",
+    "dotenv": "^8.2.0",
     "ejs": "^2.5.6",
-    "express": "^4.15.3",
+    "express": "^4.17.1",
     "express-fileupload": "^1.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "md5": "^2.3.0",
+    "moment": "^2.27.0",
     "mongoose": "^4.10.8",
+    "node-env-file": "^0.1.8",
     "nodemon": "^2.0.4"
   }
 }

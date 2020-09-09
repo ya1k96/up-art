@@ -1,44 +1,25 @@
 var mongoose = require('mongoose');
-var path = require('path');
-const { Console } = require('console');
-mongoose.connect('mongodb://ale39:Alejandro39@ds139909.mlab.com:39909/wherehouse',{ useMongoClient: true, /* other options */ });
+const csvtojsonV2=require("csvtojson");
+const ItemModel = require('../models/items');
+const LogModel = require('../models/logs');
+const moment = require('moment');
+require('dotenv').config()
+
+moment.locale('es-es');
+const dbUser = process.env.DBUSER;
+const dbPass = process.env.DBPASS;
+const urlDB  = process.env.DBURL
+const urlMongo = 'mongodb://'+ dbUser + ':'+ dbPass + urlDB; 
+console.log(urlMongo)
+mongoose.connect(urlMongo,{ useMongoClient: true });
 const db = mongoose.connection;
+
 db.once("open", function(){
   console.log("Conectado a la bd")
 });
 db.on("error", function(){
   console.log("No se pudo conectar a la base de datos")
 })
-// Create Schema
-var articuloSchema = new mongoose.Schema({
-  codigo: String,
-  fecha: {
-    type: [String],    
-  },
-  tipoArticulo: {
-    type: String,
-    enum: ["Normal", "Especial"],
-    default:"Normal"
-  },
-  liquidado : {
-    type: Boolean, 
-    default: false
-  },
-  observacion: {
-    type: String
-  }
-});
-const csvtojsonV2=require("csvtojson");
-const { response } = require('express');
-// Create Model
-var ItemModel = mongoose.model("articulos", articuloSchema);
-
-// Save Item in Model
-// var firstItem = TodoModel({ item: "Sachin Tendular"}).save(function(error) {
-//   if(error) throw error;
-//
-//   console.log("Item Saved");
-// })
 
 
 module.exports = function(app) {
@@ -46,10 +27,15 @@ module.exports = function(app) {
 
 app.get('/', function  (request, response) {
   
-  // Get todos from MongoDB
-  ItemModel.find({}, function(error, data) {
+  // obtenemos los articulos de db
+  ItemModel.find({}, async function(error, doc) {
     if(error) throw error
-    const info = { items: data, titulo: "Articulos" }
+    
+    let lastUpdate = (await LogModel.find({}).sort({fecha: -1}))[0];
+    //formateamos la fecha para hacerla legible
+    let momentFecha = moment(lastUpdate.fecha).fromNow();
+    const info = { items: doc, titulo: "Articulos", fecha: momentFecha }
+
     response.render("todo", { info: info });
   });
 
@@ -61,12 +47,11 @@ app.post('/upload', async function(req,res) {
   if( !req.files.file ) {
     return res.redirect(403,'../error-upload');
   }
+
   let archivo = req.files.file;
   //Guardamos el tipo de archivo para corroborar
   let mimetype = archivo.name;
 
-  //TODO: Rechazar archivos que no sean tipo .csv
-  
   if(!mimetype.includes('csv')) {
     return res.status(401).json({
       msg: "Este tipo de archivo no esta permitido"
@@ -79,6 +64,9 @@ app.post('/upload', async function(req,res) {
 
   const lista = await csvtojsonV2().fromFile(pathcsv)
   if(lista.length > 0) {
+    let fecha = moment();
+    await new LogModel({fecha}).save()
+
     let archivoJson = [];
      lista.forEach( async function(item) {
        if(item.normales.length > 0) {
@@ -119,5 +107,4 @@ app.get('/liquidar', async function(req,res) {
   let data = {normal: normal.length, especial: especial.length, liquidado: liquidado.length};
   return res.render('liquidar',{data: data});
 });
-
 };

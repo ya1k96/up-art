@@ -1,8 +1,8 @@
 $(document).ready(function(){
-
-  $(document).ready(function() {
+  if( $('#todo-table') ) {
     $('#todo-table').DataTable();
-  } );
+  }
+
 
   if( $("#liquidarFlag") ) {
     let cantNorm = parseInt($("#normCant").val(), 10);

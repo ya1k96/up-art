@@ -1,7 +1,8 @@
 var express = require('express');
 var todocontroller = require('./controllers/todocontroller.js');
 var bodyparser = require('body-parser');
-const fileUpload = require('express-fileupload')
+const fileUpload = require('express-fileupload');
+const usuariocontroller = require('./controllers/usuariocontroller.js');
 
 var app = express();
 var urlencodedparser = bodyparser.urlencoded({ extended: true}); // ??
@@ -17,7 +18,7 @@ app.use(express.static('./public'));
 
 // Fire controllers
 todocontroller(app);
-
+usuariocontroller(app);
 // Listen to port
 
 var port_number = (process.env.PORT || 3000);
