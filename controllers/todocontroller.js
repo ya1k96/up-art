@@ -10,7 +10,6 @@ const dbUser = process.env.DBUSER;
 const dbPass = process.env.DBPASS;
 const urlDB  = process.env.DBURL
 const urlMongo = 'mongodb://'+ dbUser + ':'+ dbPass + urlDB; 
-console.log(urlMongo)
 mongoose.connect(urlMongo,{ useMongoClient: true });
 const db = mongoose.connection;
 

@@ -1,10 +1,10 @@
 <%- include('partials/header', {titulo: info.titulo}); %>
     <div class="d-flex justify-content-center mt-4  ">
-      <h2 class="display-4 text-white">Seguimiento de articulos</h2>
+      <h2 class="display-4 text-white animate__animated animate__bounceIn">Seguimiento de articulos</h2>
     </div>
     <div class="row p-4">
       <div class="offset-md-2 col-md-8 col-12">
-        <div class="card p-4">
+        <div class="card p-4 ">
           <div class="d-flex justify-content-center">
             <p>Ultima actualizacion: <span id="fechaLU"><%= info.fecha %></span></p>
           </div>
@@ -14,7 +14,7 @@
                 <th>Codigo</th>
                 <th>Liquidado</th>
                 <th>Tipo articulo</th>
-                <th>Obs</th>
+                <!-- <th>Obs</th> -->
               </tr>
             </thead>
             <tbody>
@@ -29,7 +29,7 @@
                       <td>Aprobado</td>
                     <% }  %>
                     <td><%= info.items[i].tipoArticulo %></td>
-                    <td><%= info.items[i].observacion %></td>
+                    <!-- <td><%= info.items[i].observacion %></td> -->
                   </tr>
                 <% } %>  
               <% } %>                      
