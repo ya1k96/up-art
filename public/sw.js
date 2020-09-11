@@ -11,7 +11,6 @@ urlCache = [
     '/js/ejs.js',
     '/js/bootstrap.min.js',
     '/js/dataTables.min.js',
-    '/js/fontawesome.js',
     '/js/moment.js',
 ];
 
