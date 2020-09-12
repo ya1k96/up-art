@@ -4,6 +4,8 @@ const ItemModel = require('../models/items');
 const LogModel = require('../models/logs');
 const moment = require('moment');
 require('dotenv').config()
+//midleware 
+const rutaProtegida = require('../middlewares/rutasProtegidas');
 
 moment.locale('es-es');
 const dbUser = process.env.DBUSER;
@@ -90,7 +92,7 @@ app.post('/upload', async function(req,res) {
   }
 })
 
-app.get('/upload', (req,res) => {
+app.get('/upload', rutaProtegida, (req,res) => {
   return res.render("upload");
 });
 
