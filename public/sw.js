@@ -1,3 +1,5 @@
+/*
+    Temporalmente de desuso
 const CACHE_NAME = 'v1_cache_yamArt',
 urlCache = [
     '/',
@@ -46,6 +48,9 @@ self.addEventListener('fetch', e => {
     e.respondWith(
         caches.match(e.request)
         .then( res => {
+            if (e.request.cache === 'only-if-cached' && e.request.mode !== 'same-origin') {
+                return;
+            }
             if(res) {
                 return res;
             }
@@ -59,3 +64,4 @@ self.addEventListener('fetch', e => {
         })
     )
 });
+*/

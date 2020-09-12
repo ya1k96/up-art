@@ -1,8 +1,9 @@
 $(document).ready(function(){
-  if('serviceWorker' in navigator ){
-    navigator.serviceWorker.register('../sw.js')
-    .then(resp => console.log("sw registered"));
-  }
+  //Temporalmente en desuso
+  // if('serviceWorker' in navigator ){
+  //   navigator.serviceWorker.register('../sw.js')
+  //   .then(resp => console.log("sw registered"));
+  // }
 
   if( $('#todo-table') ) {
     $('#todo-table').DataTable();

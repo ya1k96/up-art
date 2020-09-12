@@ -1,28 +1,11 @@
-var mongoose = require('mongoose');
 const csvtojsonV2=require("csvtojson");
 const ItemModel = require('../models/items');
 const LogModel = require('../models/logs');
 const moment = require('moment');
-require('dotenv').config()
 
 moment.locale('es-es');
-const dbUser = process.env.DBUSER;
-const dbPass = process.env.DBPASS;
-const urlDB  = process.env.DBURL
-const urlMongo = 'mongodb://'+ dbUser + ':'+ dbPass + urlDB; 
-mongoose.connect(urlMongo,{ useMongoClient: true });
-const db = mongoose.connection;
-
-db.once("open", function(){
-  console.log("Conectado a la bd")
-});
-db.on("error", function(){
-  console.log("No se pudo conectar a la base de datos")
-})
-
 
 module.exports = function(app) {
-
 
 app.get('/', function  (request, response) {
   

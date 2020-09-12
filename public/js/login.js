@@ -25,7 +25,7 @@ $(document).ready(function() {
                 if(!data.ok) {
                     alert("Contraseña o usuario incorrectos")
                 } else {
-                    let user = JSON.stringify({ user: data.usuario });
+                    let user = JSON.stringify({ user: data.usuario, token: data.token });
                     localStorage.setItem('user', user);
                     let url = window.location.href;
                     let uri = url.split('/')[2];
