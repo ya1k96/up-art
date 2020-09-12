@@ -33,6 +33,7 @@ module.exports = function(app) {
                 ok: true,
                 msg: 'Autorizado',
                 user: user.nick,
+                role: dbUser.role,
                 token
             })
         } else {

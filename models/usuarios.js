@@ -12,6 +12,11 @@ var usuarioSchema = new mongoose.Schema({
    },
    email: {
        type: String
+   },
+   role: {
+       type: String,
+       enum: ["admin", "client"],
+       default: "client"
    }
   });
 
