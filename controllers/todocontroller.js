@@ -3,30 +3,43 @@ const ItemModel = require('../models/items');
 const LogModel = require('../models/logs');
 const moment = require('moment');
 require('dotenv').config()
+
 //midleware 
 const rutaProtegida = require('../middlewares/rutasProtegidas');
-
 moment.locale('es-es');
 
 module.exports = function(app) {
 
-app.get('/', function  (request, response) {
+app.get('/', async function (request, response) {
+    const userData = {
+      user: request.session.user,
+      role: request.session.role,
+      logged: request.session.logged         
+    };
   
-  // obtenemos los articulos de db
-  ItemModel.find({}, async function(error, doc) {
-    if(error) throw error
-    
-    let lastUpdate = (await LogModel.find({}).sort({fecha: -1}))[0];
-    //formateamos la fecha para hacerla legible
-    let momentFecha = moment(lastUpdate.fecha).fromNow();
-    const info = { items: doc, titulo: "Articulos", fecha: momentFecha }
 
-    response.render("todo", { info: info });
-  });
+  // obtenemos los articulos de db
+  const doc = await ItemModel.find({});
+  let lastUpdate = (await LogModel.find({}).sort({fecha: -1}))[0];
+  //formateamos la fecha para hacerla legible
+  let momentFecha = moment(lastUpdate.fecha).fromNow();
+  const info = { items: doc, titulo: "Articulos", fecha: momentFecha };
+
+  response.render("todo", { info: info, userData: userData });
 
 });
 
-app.post('/upload', async function(req,res) {
+app.get('/login', function(req, res) {
+  const userData = {
+    user: req.session.user,
+    role: req.session.role,
+    logged: req.session.logged         
+  };
+
+  return res.render('login', {userData: userData});
+})
+
+app.post('/upload', rutaProtegida, async function(req,res) {
 
   
   if( !req.files.file ) {
@@ -77,7 +90,13 @@ app.post('/upload', async function(req,res) {
 })
 
 app.get('/upload', rutaProtegida, (req,res) => {
-  return res.render("upload");
+  const userData = {
+    user: req.session.user,
+    role: req.session.role,
+    logged: req.session.logged         
+  };
+
+  return res.render("upload", {userData: userData});
 });
 
 
@@ -85,11 +104,18 @@ app.get('/error-upload', function(req,res) {
   return res.render('events/error-upload');
 })
 
-app.get('/liquidar', async function(req,res) {
+app.get('/liquidar', rutaProtegida, async function(req,res) {
   let normal = await ItemModel.find({'tipoArticulo': 'Normal', liquidado: false});
   let especial = await ItemModel.find({'tipoArticulo': 'Especial', liquidado: false});
   let liquidado = await ItemModel.find({liquidado: true});
   let data = {normal: normal.length, especial: especial.length, liquidado: liquidado.length};
-  return res.render('liquidar',{data: data});
+
+  const userData = {
+    user: req.session.user,
+    role: req.session.role,
+    logged: req.session.logged        
+  };
+
+  return res.render('liquidar',{data: data, userData: userData});
 });
 };

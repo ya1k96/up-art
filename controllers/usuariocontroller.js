@@ -3,9 +3,6 @@ const md5 = require('md5');
 const jwt = require("jsonwebtoken");
 
 module.exports = function(app) {
-    app.get('/login', function(req, res) {
-        return res.render('login');
-    })
     
     app.post('/login', async function(req, res) {
 
@@ -29,13 +26,17 @@ module.exports = function(app) {
                 expiresIn: (1440 * 120 * 2)
             });
 
+            req.session.token = token;
+            req.session.role = dbUser.role;
+            req.session.user = user.nick;
+            req.session.logged = true;
+
+
             return res.json({
                 ok: true,
-                msg: 'Autorizado',
-                user: user.nick,
-                role: dbUser.role,
-                token
+                msg: 'Autorizado'
             })
+
         } else {
             return res.json({
                 ok: false,
@@ -44,6 +45,7 @@ module.exports = function(app) {
         }
 
     } catch (error) {
+        console.log(error)
         return res.json({
             ok: false,
             error

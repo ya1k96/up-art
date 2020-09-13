@@ -6,48 +6,38 @@
   
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
+
         <li class="nav-item active">
           <a class="nav-link" href="/">Inicio <span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item" id="rAdmin">
-          <a class="nav-link" href="/upload">Subir CSV</a>
-        </li>
-        <li class="nav-item" id="rClient">
-          <a class="nav-link" href="/liquidar">Liquidar</a>
-        </li>
-        <li class="nav-item" id="rLogin">
-          <a class="nav-link" href="/login"> <i class="fa fa-user"></i> Log in</a>
-        </li>
-        <li class="nav-item" id="rLogout">
-            <a class="nav-link" href="/login"> <i class="fa fa-user"></i> Log in</a>
-          </li>
+        
+        <% if( userData && userData.role == 'admin') {%>
+            <li class="nav-item">
+              <a class="nav-link" href="/upload">Subir CSV</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/liquidar">Liquidar</a>
+            </li>
+        <% } %>
+
+        <% if( userData && userData.role == 'client') {%>
+            <li class="nav-item">
+              <a class="nav-link" href="/liquidar">Liquidar</a>
+            </li>
+        <% } %>
+
+         <% if(userData.logged) {%>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout"> <i class="fa fa-user"></i> Log out</a>
+            </li>
+        <% } else {%>
+            <li class="nav-item">
+              <a class="nav-link" href="/login"> <i class="fa fa-user"></i> Log in</a>
+            </li>
+        <% } %>
+        
+
+
       </ul>
     </div>  
 </nav>
-<!-- Hoja de estilo -->
-<style>
-    #rAdmin, #rClient, #rLogout {
-        display: none;
-    }
-</style>
-<!-- Funciones especiales -->
-<script>
-$(document).ready(function() {
-
-  const rAdmin = $('rAdmin')
-  const rClient = $('rClient')
-  const rLogin = $('rLogin')
-  const rLogout = $('rLogout')
-
-  if(localStorage.getItem('user')) {
-    const username = localStorage.getItem('user');
-    const role = localStorage.getItem('role');
-
-    if( role == 'admin') {
-      rAdmin.show();
-    }
-
-  }
-
-});
-</script>

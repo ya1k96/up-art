@@ -5,6 +5,7 @@ const fileUpload = require('express-fileupload');
 const usuariocontroller = require('./controllers/usuariocontroller.js');
 require('dotenv').config()
 var mongoose = require('mongoose');
+var session = require('express-session')
 
 const dbUser = process.env.DBUSER;
 const dbPass = process.env.DBPASS;
@@ -26,6 +27,16 @@ var app = express();
 var urlencodedparser = bodyparser.urlencoded({ extended: true}); // ??
 
 app.set('secreto', process.env.SECRET)
+app.use(session({
+  secret: process.env.SECRET,
+  resave: true,
+  saveUninitialized: true,
+  user: null,
+  token: null,
+  role: null,
+  logged: false
+}))
+
 app.use(urlencodedparser)
 app.use(bodyparser.json())
 app.use(fileUpload())
@@ -47,6 +58,7 @@ app.use(express.static('./public'));
 // Fire controllers
 todocontroller(app);
 usuariocontroller(app);
+
 // Listen to port
 
 var port_number = (process.env.PORT || 3000);
