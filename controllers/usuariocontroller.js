@@ -4,6 +4,16 @@ const jwt = require("jsonwebtoken");
 
 module.exports = function(app) {
     
+    app.get('/logout', function(req, res) {
+        if(req.session.logged) {
+            req.session.token = '';
+            req.session.role = null;
+            req.session.user = null;
+            req.session.logged = false;
+        }
+        return res.redirect('/');
+    });
+    
     app.post('/login', async function(req, res) {
 
     if( !req.body ) {
