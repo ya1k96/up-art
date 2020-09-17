@@ -5,7 +5,7 @@ const moment = require('moment');
 require('dotenv').config()
 
 //midleware 
-const rutaProtegida = require('../middlewares/rutasProtegidas');
+const rutas = require('../middlewares/rutasProtegidas');
 moment.locale('es-es');
 
 module.exports = function(app) {
@@ -39,7 +39,7 @@ app.get('/login', function(req, res) {
   return res.render('login', {userData: userData});
 })
 
-app.post('/upload', rutaProtegida, async function(req,res) {
+app.post('/upload', rutas.admin, async function(req,res) {
 
   
   if( !req.files.file ) {
@@ -89,7 +89,7 @@ app.post('/upload', rutaProtegida, async function(req,res) {
   }
 })
 
-app.get('/upload', rutaProtegida, (req,res) => {
+app.get('/upload', rutas.admin, (req,res) => {
   const userData = {
     user: req.session.user,
     role: req.session.role,
@@ -104,7 +104,7 @@ app.get('/error-upload', function(req,res) {
   return res.render('events/error-upload');
 })
 
-app.get('/liquidar', rutaProtegida, async function(req,res) {
+app.get('/liquidar', rutas.client, async function(req,res) {
   let normal = await ItemModel.find({'tipoArticulo': 'Normal', liquidado: false});
   let especial = await ItemModel.find({'tipoArticulo': 'Especial', liquidado: false});
   let liquidado = await ItemModel.find({liquidado: true});

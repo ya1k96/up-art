@@ -27,18 +27,18 @@ module.exports = function(app) {
     
     try {
         const user = new UsuarioModel(req.body);
-        const dbUser = await UsuarioModel.findOne({nick: user.nick});
+        const dbUser = await UsuarioModel.findOne({ usuario: user.usuario });
+        
+        if( md5(user.contras) === dbUser.contras ) {
 
-        if( md5(user.contras) == dbUser.contras ) {
-
-            const payload = { usuario: user.nick };
+            const payload = { usuario: user.usuario };
             const token = jwt.sign(payload, app.get('secreto'), {
                 expiresIn: (1440 * 120 * 2)
             });
 
             req.session.token = token;
             req.session.role = dbUser.role;
-            req.session.user = user.nick;
+            req.session.user = user.usuario;
             req.session.logged = true;
 
 
