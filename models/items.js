@@ -16,6 +16,10 @@ var articuloSchema = new mongoose.Schema({
     },
     observacion: {
       type: String
+    },
+    actualizado: {
+      type: Boolean,
+      default: false
     }
   });
 
