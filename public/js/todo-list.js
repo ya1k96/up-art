@@ -51,4 +51,13 @@ $(document).ready(function(){
     })
 
   }
+
+  if( $("#proveedores-tabla") ) {
+      $("#proveedores-tabla").DataTable();
+
+      $("table tbody tr").on('click', function(event){
+        console.log(event);
+      })
+  }
+
 });
