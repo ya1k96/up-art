@@ -1,5 +1,6 @@
 const ProveedoresModel = require('../models/proveedores');
 const Items = require('../models/items');
+const rutas = require('../middlewares/rutasProtegidas');
 
 module.exports = function(app) {
     app.get('/proveedores', async function(req, res) {

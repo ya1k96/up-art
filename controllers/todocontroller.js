@@ -74,22 +74,29 @@ app.post('/upload', rutas.admin, async function(req,res) {
       }
 
       if( !item.normales.length > 0) {
-        data = {
-          codigo: item.normales,
-          tipoArticulo: 'Especial',
-          observacion: item.observacion
-        }
+        data.tipoArticulo = 'Especial'
+        data.codigo = item.especiales
       } 
 
       try {
         await ItemModel(data).save();
       } catch (error) {
-        console.log(error);
+        archivoJson.push(data.codigo)
       }
       
       })
-      return res.json({ok: true, msg:'Tus datos fueron cargados'});
+      let resp = {ok: true, msg:'Tus datos fueron cargados'};
+      if(archivoJson.length > 0 ) {
+        resp.info = {
+          error: "Existen articulos que fueron cargados anteriormente",
+          articulosRechazados: archivoJson
+        }
+      }
 
+      return res.json(resp);
+
+  } else {
+    return res.json({ok: false, msg: "El documento esta vacio"})
   }
 })
 
