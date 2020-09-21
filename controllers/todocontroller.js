@@ -67,22 +67,26 @@ app.post('/upload', rutas.admin, async function(req,res) {
 
     let archivoJson = [];
      lista.forEach( async function(item) {
-       if(item.normales.length > 0) {
-         let data = {
-           codigo: item.normales,
-           tipoArticulo: 'Normal',
-           observacion: item.observacion
-         }
-         await ItemModel(data).save();
-       } else {
-        let data = {
-          codigo: item.especiales,
+      let data = {
+        codigo: item.normales,
+        tipoArticulo: 'Normal',
+        observacion: item.observacion
+      }
+
+      if( !item.normales.length > 0) {
+        data = {
+          codigo: item.normales,
           tipoArticulo: 'Especial',
           observacion: item.observacion
         }
+      } 
+
+      try {
         await ItemModel(data).save();
-       }
-       
+      } catch (error) {
+        console.log(error);
+      }
+      
       })
       return res.json({ok: true, msg:'Tus datos fueron cargados'});
 

@@ -1,4 +1,5 @@
 const ProveedoresModel = require('../models/proveedores');
+const Items = require('../models/items');
 
 module.exports = function(app) {
     app.get('/proveedores', async function(req, res) {
@@ -8,9 +9,11 @@ module.exports = function(app) {
 	      role:   req.session.role,
 	      logged: req.session.logged         
 	    };
- 
-    	const data = {proveedores:prov, userData: userData};
-    	return res.render('/proveedores', data);
+		const data = await Items.find({});
+
+		return res.json({data});
+    	// const data = {proveedores:prov, userData: userData};
+    	// return res.render('/proveedores', data);
     });
 
     app.get('/proveedores/:id', async function(req, res) {

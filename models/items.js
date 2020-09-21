@@ -1,9 +1,12 @@
 const mongoose = require('mongoose')
 // Create Schema
 var articuloSchema = new mongoose.Schema({
-    codigo: String,
+    codigo: {
+      type: String,
+      unique: true
+    },
     fecha: {
-      type: [String],    
+      type: String,    
     },
     tipoArticulo: {
       type: String,

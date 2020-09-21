@@ -3,6 +3,7 @@ var todocontroller = require('./controllers/todocontroller.js');
 var bodyparser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const usuariocontroller = require('./controllers/usuariocontroller.js');
+const proveedoresController = require('./controllers/proveedores.js');
 require('dotenv').config()
 var mongoose = require('mongoose');
 var session = require('express-session')
@@ -58,6 +59,7 @@ app.use(express.static('./public'));
 // Fire controllers
 todocontroller(app);
 usuariocontroller(app);
+proveedoresController(app);
 
 // Listen to port
 
