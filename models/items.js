@@ -5,11 +5,11 @@ var articuloSchema = new mongoose.Schema({
     fecha: {
       type: [String],    
     },
-    tipoArticulo: {
-      type: String,
-      enum: ["Normal", "Especial"],
-      default:"Normal"
-    },
+    //tipoArticulo: {
+    //  type: String,
+    //  enum: ["Normal", "Especial"],
+    //  default:"Normal"
+    //},
     liquidado : {
       type: Boolean, 
       default: false
