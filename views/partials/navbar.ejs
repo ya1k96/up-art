@@ -28,11 +28,14 @@
 
          <% if(userData.logged) {%>
             <li class="nav-item">
-              <a class="nav-link" href="/logout"> <i class="fa fa-user"></i> Log out</a>
+              <a class="nav-link"> </i><%= userData.user %></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout"> <i class="fa fa-user"></i> Salir</a>
             </li>
         <% } else {%>
             <li class="nav-item">
-              <a class="nav-link" href="/login"> <i class="fa fa-user"></i> Log in</a>
+              <a class="nav-link" href="/login"> <i class="fa fa-user"></i> Ingresar</a>
             </li>
         <% } %>
         

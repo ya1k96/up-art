@@ -6,7 +6,7 @@
         <h2 class="display-4 text-white animate__bounceIn">Calcular liquidacion</h2>
     </div>
     <div class="row">
-        <div class="offset-md-3 col-md-4 col-12">
+        <div class="offset-md-3 col-md-6 col-12">
             <div class="card bg-white p-4">
                 <span text-center><strong>Info gral</strong></span>
                 <pre>
@@ -24,33 +24,87 @@ Total articulos liquidados: <%= data.liquidado %>
                     <div class="form-group">
                       <label for="select">Tipo de articulo</label>
                       <select id="select" class="form-control">
-                        <option>Normal</option>
+                        <option>Todos</option>
                         <option>Especial</option>
                       </select>
                     </div>
-                    <div class="form-check">
+                    <!-- <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="check">
                         <label class="form-check-label" for="disabledFieldsetCheck">
                           Calcular todo
                         </label>
-                      </div>
-                    <button class="btn btn-primary mt-2" id="calcular">Calcular</button>
+                    </div> -->
+                    <!-- <button class="btn btn-primary mt-2" id="calcular">Calcular</button> -->
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                      Calcular
+                    </button>
                   </fieldset>
             </div>
         </div>
-        <div class="col-md-3 col-12 p-0">
+        <!-- <div class="col-md-3 col-12 p-0">
             <div class="col-12">
                 <div class="card bg-white p-4">
                     <div id="subTotNorm"><span>Subtotal: $0</span></div>
                     <div id="subTotEsp"><span>Subtotal: $0</span></div>
                     <hr>
-                    <div id="total"><span>Total: $0</span></div>
+                    <div id=""><span>Total: $0</span></div>
                 </div>
 
             </div>
 
-        </div>
+        </div> -->
     </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Liquidacion al dia <span id="fecha"></span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body pb-0" id="imprimir">
+        <table class="table table-sm m-0">
+          <thead class="thead-dark">
+            <tr>
+              <th>Total Articulos</th>
+              <th>Tipo</th>
+              <th>Precio</th>
+              <th>Sub Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span id="cantEspecial"></span></td>
+              <td>Editados(especial)</td>
+              <td>$10</td>
+              <td><span id="subEsp"></span></td>
+            </tr>
+            <tr>
+              <td><span id="cantNormal"></span></td>
+              <td>Normal</td>
+              <td>$5</td>
+              <td><span id="subNormal"></span></td>
+            </tr>            
+          </tbody>
+        </table>
+        <div class="row">
+          <div class="offset-md-9 col-2 offset-9">
+            <p class="p-1"> Total $<span id="total"></span></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">cerrar</button>
+        <button type="button" id="btnPrint" class="btn btn-primary">Imprimir</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <%- include('partials/footer'); %>

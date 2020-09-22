@@ -85,13 +85,8 @@ app.post('/upload', rutas.admin, async function(req,res) {
       }
       
       })
-      let resp = {ok: true, msg:'Tus datos fueron cargados'};
-      if(archivoJson.length > 0 ) {
-        resp.info = {
-          error: "Existen articulos que fueron cargados anteriormente",
-          articulosRechazados: archivoJson
-        }
-      }
+      let resp = {ok: true, msg:'Tus datos fueron cargados', articulosRechazados: archivoJson};
+
 
       return res.json(resp);
 
