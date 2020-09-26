@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 // Create Schema
 var actualizacion = new mongoose.Schema({
-  codigo: { mongoose.Schema.ObjectId, ref: "articulos" },
+  codigo: { type: mongoose.Schema.ObjectId, ref: "articulos" },
   tipo: {
     type: String,
     enum:["Especial", "Normal"],
