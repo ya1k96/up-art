@@ -9,7 +9,7 @@ var liquidacionSchema = new mongoose.Schema({
     pagado: {
       type: Boolean,
       default: false
-    },
+    },    
     total: String,
     subTotalNormal: String,
     subTotalEspecial: String,

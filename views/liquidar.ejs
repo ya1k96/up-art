@@ -2,11 +2,9 @@
 <%- include('partials/navbar', {userData}); %>
 
 <div id="liquidarFlag">
-    <div class="d-flex justify-content-center m-4">
-        <h2 class="display-4 text-white animate__bounceIn">Calcular liquidacion</h2>
-    </div>
     <div class="row">
-        <div class="offset-md-1 col-md-5 col-12">
+        <div class="offset-md-3 col-md-5 col-12">
+          <h2 class="display-4 text-white animate__bounceIn text-center">Calcular liquidacion</h2>
             <div class="card bg-white p-4">
                 <span text-center><strong>Info gral</strong></span>
                 <pre>
@@ -42,37 +40,17 @@ Total articulos liquidados: <%= data.liquidado %>
                   </fieldset>
             </div>
         </div>
-        <div class="col-md-3 col-12 p-0 m-2">
-            <div class="col-12">                
-              <% if(data.liquidaciones.length > 0) { %>
-                <% for(var i = 0; i < data.liquidaciones.length; i++) { %>
-                  <div class="row">
-                    <div class="card">
-                      
-                      <div id="accordion" role="tablist">
-                        <div class="card">
-                          <div class="card-header" role="tab">
-                            <h5 class="mb-0">
-                              <a data-toggle="collapse" href="#colapse<%= i %>" aria-expanded="true" aria-controls="colapse<%= i %>">
-                                <%= data.liquidaciones[i].createdAt %>
-                              </a>
-                            </h5>
-                          </div>
-                      
-                          <div id="colapse<%= i %>" class="collapse show" role="tabpanel" aria-labelledby="headingOne">
-                            <div class="card-body">
-                              <%= data.liquidaciones[i].subTotalNormal %>
-                              <%= data.liquidaciones[i].subTotalEspecial %>
-                              <%= data.liquidaciones[i].total %>                              
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                <% } %>
-              <% } %>
+        <div class="col-md-3 col-12 p-0 mt-3">
+            <p class="display-4 mx-3" style="font-size: 2rem;">Liquidaciones</p>
+            
+            <div class="col-12" id="liquidaciones">
+              <div class="card" id="spinner">
+                  <div class="d-flex justify-content-center">
+                    <div class="spinner-border m-4" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>                   
+              </div>                                 
+            </div>
             </div>
 
         </div> 
@@ -121,10 +99,11 @@ Total articulos liquidados: <%= data.liquidado %>
           </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">cerrar</button>
+      <div class="modal-footer">        
+        <button type="button" id="btnSave" class="btn btn-success">Guardar</button>
         <button type="button" id="btnPrint" class="btn btn-primary">Imprimir</button>
       </div>
+
     </div>
   </div>
 </div>

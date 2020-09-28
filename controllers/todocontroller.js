@@ -117,13 +117,10 @@ app.get('/liquidar', rutas.client, async function(req,res) {
   const especial = articulosALiquidar.filter( item => item.tipoArticulo === 'Especial');
 
   let liquidado = await ItemModel.find({liquidado: true});
-  const liquidaciones = await LiquidacionModel.find({}, ['pagado','total', 'subTotalNormal','subTotalEspecial']);
-  console.log(liquidaciones)
   let data = {
     normal: normal.length,
     especial: especial.length, 
-    liquidado: liquidado.length,
-    liquidaciones: liquidaciones        
+    liquidado: liquidado.length    
   };
 
   const userData = {
@@ -181,6 +178,12 @@ app.get('/confirmar-liquidacion/:id', rutas.admin, async function(req, res) {
 
   return res.json(liquidacion)
 
+})
+
+//Unicamente AJAX
+app.get('/liquidacion-list', async function(req, res){
+  const liquidaciones = await LiquidacionModel.find({}, ['createdAt','pagado','total', 'subTotalNormal','subTotalEspecial']);
+  return res.json(liquidaciones);
 })
 
 };

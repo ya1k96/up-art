@@ -9,6 +9,7 @@ $(document).ready(function(){
     $('#todo-table').DataTable();
   }
 
+  //if( $(".colapse") ) $('.collapse').collapse()  
 
   if( $("#liquidarFlag") ) {
     let cantNorm = parseInt($("#normCant").val(), 10);
@@ -32,43 +33,62 @@ $(document).ready(function(){
         header: "<h1>Liquidacion del dia</h1>"
     })   
     }) 
-    // $("#check").on("change", function() {
-    //   let value = $("#select").attr("disabled");
-    //   $("#total")[0].innerHTML = "Total: $0";
-    //   $("#subTotNorm")[0].innerText = "Subtotal: $0";
-    //   $("#subTotEsp")[0].innerText  = "Subtotal: $0";
-    //   $("#select").attr("disabled", !value);
-    //   $("#cantidad").attr("disabled", !value);
-    //   $("#cantidad").attr("value", (cantEsp+cantNorm));
-    // })
+    
+    $("#btnSave").on('click', function(e){
+      let btnSave = $("#btnSave")
+      let spinner = `<div class="spinner-border spinner-border-sm" role="status">
+                    <span class="sr-only">Loading...</span>`;
+      btnSave.attr("disabled", true);
+      btnSave.append(spinner);
 
-    // let calcBoton = $("#calcular");
+      //Hacer la peticion http a pedir liquidacion
+    })
+    
+    //Lista que genera las liquidaciones hechas por el usuario
+    $.get('../liquidacion-list')        
+    .then(function(resp) {
+      $("#spinner").remove();
+      if( resp.length != 0 ) {
+        resp.forEach( function(item) {
+          var cardL = `<div id="accordion" role="tablist">
+          <div class="card animate__bounceIn">
+            <div class="card-header" role="tab" id="heading${item._id}">
+              <h5 class="mb-0">
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  ${moment(item.createdAt).fromNow()}
+                </a>
+              </h5>
+            </div>
 
-    // calcBoton.on("click", () => {
-    //   let todoSelected = $("#check").is(':checked')
-      
-    //   if( todoSelected ) {
-    //     let subtotalEsp = cantEsp * 10;
-    //     let subtotalNorm = cantNorm * 5;
-    //     let totalPrecio = subtotalEsp + subtotalNorm;
-  
-    //     $("#subTotNorm")[0].innerText = "Subtotal normal: $"+ subtotalNorm.toString(); 
-    //     $("#subTotEsp")[0].innerText = "Subtotal especial: $"+ subtotalEsp.toString(); 
-    //     $("#total")[0].innerText = "Total: $"+ totalPrecio.toString(); 
-    //   } else {
-    //     //Si no esta seleccionado liquidar todo, pasamos a liquidar solo lo seleccionado
-    //     let cantidadEl = $("#cantidad").val();
-    //     let selectEl = $("#select option:selected").val();
-    //     var precio = 5
+            <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-12">
+                  $${item.subTotalNormal} Art. Normales
+                </div>                
+                <div class="col-12">
+                  $${item.subTotalEspecial} Art. Editados
+                </div> 
+                <div class="col-12">
+                  Total $${item.total}
+                </div>
+                </div>                                                              
+              </div>
+              <button class="btn btn-block btn-success">imprimir comprobante</button>  
+            </div>
+          </div>
 
-    //     if(selectEl == 'Especial') {
-    //       precio = 10;
-    //     }
-        
-    //     $("#total")[0].innerText = "Total: $" + (cantidadEl * precio).toString();
-    //   }
-    // })
-
+        </div>`; 
+        $("#liquidaciones").append(cardL);  
+        })
+      } else {
+        $("#liquidaciones").append(`<div class="card">
+          <div class="d-flex justify-content-center p-4">
+            <p>No tenes liquidaciones</p>
+          </div>
+          </div>`)
+      }
+    })
   }
 
   if( $("#proveedores-tabla") ) {
