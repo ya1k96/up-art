@@ -34,9 +34,15 @@ Total articulos liquidados: <%= data.liquidado %>
                     </div> -->
                     <!-- <button class="btn btn-primary mt-2" id="calcular">Calcular</button> -->
                     <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                      Calcular
-                    </button>
+                    <% 
+                      let lenArts = (data.especial + data.normal ); 
+                      if ( lenArts != 0 ) {
+                    %>
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        Calcular
+                      </button>
+
+                    <% } %>
                   </fieldset>
             </div>
         </div>
@@ -62,46 +68,58 @@ Total articulos liquidados: <%= data.liquidado %>
 <div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header">        
         <h5 class="modal-title" id="exampleModalLabel">Liquidacion al dia <span id="fecha"></span></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body pb-0" id="imprimir">
-        <table class="table table-sm m-0">
-          <thead class="thead-dark">
-            <tr>
-              <th>Total Articulos</th>
-              <th>Tipo</th>
-              <th>Precio</th>
-              <th>Sub Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span id="cantEspecial"></span></td>
-              <td>Editados(especial)</td>
-              <td>$10</td>
-              <td><span id="subEsp"></span></td>
-            </tr>
-            <tr>
-              <td><span id="cantNormal"></span></td>
-              <td>Normal</td>
-              <td>$5</td>
-              <td><span id="subNormal"></span></td>
-            </tr>            
-          </tbody>
-        </table>
+      </div>      
+      <div id="notificaciones">
+      </div>   
+      <div class="modal-body pb-0" id="imprimir">      
+        <%         
+          if ( lenArts != 0 ) {
+        %>
+          <table class="table table-sm m-0">
+            <thead class="thead-dark">
+              <tr>
+                <th>Total Articulos</th>
+                <th>Tipo</th>
+                <th>Precio</th>
+                <th>Sub Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span id="cantEspecial"></span></td>
+                <td>Editados(especial)</td>
+                <td>$10</td>
+                <td><span id="subEsp"></span></td>
+              </tr>
+              <tr>
+                <td><span id="cantNormal"></span></td>
+                <td>Normal</td>
+                <td>$5</td>
+                <td><span id="subNormal"></span></td>
+              </tr>            
+            </tbody>
+          </table>
+        <% } else { %>        
+          <div class="d-flex justify-content-center">
+            <p>Estas al dia</p>
+          </div>  
+        <% } %>        
         <div class="row">
           <div class="offset-md-9 col-2 offset-9">
             <p class="p-1"> Total $<span id="total"></span></p>
           </div>
         </div>
       </div>
-      <div class="modal-footer">        
-        <button type="button" id="btnSave" class="btn btn-success">Guardar</button>
-        <button type="button" id="btnPrint" class="btn btn-primary">Imprimir</button>
+      <div class="modal-footer">   
+        <% if( lenArts != 0 ) { %>        
+          <button type="button" id="btnSave" class="btn btn-success">Guardar</button>
+          <button type="button" id="btnPrint" class="btn btn-primary">Imprimir</button>
+        <% } %>          
       </div>
 
     </div>

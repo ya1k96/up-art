@@ -9,7 +9,7 @@ $(document).ready(function(){
     $('#todo-table').DataTable();
   }
 
-  //if( $(".colapse") ) $('.collapse').collapse()  
+  if( $(".colapse") ) $('.collapse').collapse()  
 
   if( $("#liquidarFlag") ) {
     let cantNorm = parseInt($("#normCant").val(), 10);
@@ -17,15 +17,17 @@ $(document).ready(function(){
     let subtotalEsp = cantEsp * 10;
     let subtotalNorm = cantNorm * 5;
     let totalPrecio = subtotalEsp + subtotalNorm;
-
-    $('#cantEspecial')[0].innerText = cantEsp
-    $('#subEsp')[0].innerText = subtotalEsp
-    $('#cantNormal')[0].innerText = cantNorm
-    $('#subNormal')[0].innerText = subtotalNorm
-    $('#total')[0].innerText = totalPrecio
     $("#cantidad").attr("disabled", true);
     $("#select").attr("disabled", true);
-    $("#cantidad").attr("value", (cantEsp+cantNorm));
+    
+    if( (cantNorm + cantEsp) != 0 ) {
+      $('#cantEspecial')[0].innerText = cantEsp
+      $('#subEsp')[0].innerText = subtotalEsp
+      $('#cantNormal')[0].innerText = cantNorm
+      $('#subNormal')[0].innerText = subtotalNorm
+      $('#total')[0].innerText = totalPrecio
+      $("#cantidad").attr("value", (cantEsp+cantNorm));
+    } 
 
     $("#btnPrint").on("click", function() {
       $("#imprimir").printThis({
@@ -36,12 +38,37 @@ $(document).ready(function(){
     
     $("#btnSave").on('click', function(e){
       let btnSave = $("#btnSave")
-      let spinner = `<div class="spinner-border spinner-border-sm" role="status">
-                    <span class="sr-only">Loading...</span>`;
+      let spinner = $('<div>', {
+        'html'  : '<span class="sr-only">Loading...</span>',
+        'class' : 'spinner-border spinner-border-sm'   ,
+        'role'  : 'status'            
+      });
+
       btnSave.attr("disabled", true);
       btnSave.append(spinner);
 
-      //Hacer la peticion http a pedir liquidacion
+      //peticion http a pedir liquidacion
+      $.get('../pedir-liquidacion')
+      .then( function (resp) {        
+
+        let confirmacion = $('<div>', {          
+          'class' : ' animate__bounceIn alert'            
+        });        
+        resp.ok ? confirmacion.addClass(".success") : confirmacion.addClass(".danger");
+        confirmacion.append(resp.msg);
+
+        spinner.fadeOut('fast');
+        btnSave.attr("disabled", false);
+        $("#notificaciones").append(confirmacion);
+
+        //Luego de tres segundos eliminamos la notificacion
+        setTimeout(function(){
+          confirmacion.fadeOut('fast');
+        }, 3000);
+        
+      })
+      
+
     })
     
     //Lista que genera las liquidaciones hechas por el usuario
@@ -55,30 +82,30 @@ $(document).ready(function(){
             <div class="card-header" role="tab" id="heading${item._id}">
               <h5 class="mb-0">
                 <a data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                  ${moment(item.createdAt).fromNow()}
+                  ${moment(item.createdAt).format('l')}
                 </a>
               </h5>
             </div>
 
-            <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne">
+            <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
               <div class="card-body">
                 <div class="row">
                   <div class="col-12">
-                  $${item.subTotalNormal} Art. Normales
+                  Art. Normales $${item.subTotalNormal}
                 </div>                
                 <div class="col-12">
-                  $${item.subTotalEspecial} Art. Editados
+                  Art. Editados $${item.subTotalEspecial}
                 </div> 
                 <div class="col-12">
                   Total $${item.total}
                 </div>
                 </div>                                                              
               </div>
-              <button class="btn btn-block btn-success">imprimir comprobante</button>  
+              
             </div>
           </div>
-
-        </div>`; 
+        </div>`;        
+        //<button class="btn btn-block btn-success">imprimir comprobante</button>   
         $("#liquidaciones").append(cardL);  
         })
       } else {

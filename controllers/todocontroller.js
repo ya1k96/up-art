@@ -150,7 +150,12 @@ app.get('/pedir-liquidacion', rutas.client, async function(req, res) {
     lToAdd.subTotalNormal = listaNormal.length * 5 
     lToAdd.subTotalEspecial = listaEspecial.length * 10 
     lToAdd.total = (lToAdd.subTotalEspecial + lToAdd.subTotalNormal)
-    articulosALiquidar.forEach(item => lToAdd.articulos.push(item._id))
+
+    articulosALiquidar.forEach(async (item) => {
+      item.liquidado = true; 
+      lToAdd.articulos.push(item._id);      
+      await item.save();
+    })    
 
     if(await LiquidacionModel(lToAdd).save()) {
       resp.ok = true
@@ -161,7 +166,7 @@ app.get('/pedir-liquidacion', rutas.client, async function(req, res) {
   return res.json(resp)
 });
 
-app.get('/confirmar-liquidacion/:id', rutas.admin, async function(req, res) {
+app.get('/rollback/:id', rutas.admin, async function(req, res) {
   if(!req.params.id) {
     return res.json({ok: false, msg: "Provee los datos necesarios"})
   }
