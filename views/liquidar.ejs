@@ -104,16 +104,16 @@ Total articulos liquidados: <%= data.liquidado %>
               </tr>            
             </tbody>
           </table>
+          <div class="row">
+            <div class="offset-md-9 col-2 offset-9">
+              <p class="p-1"> Total $<span id="total"></span></p>
+            </div>
+          </div>
         <% } else { %>        
           <div class="d-flex justify-content-center">
             <p>Estas al dia</p>
           </div>  
-        <% } %>        
-        <div class="row">
-          <div class="offset-md-9 col-2 offset-9">
-            <p class="p-1"> Total $<span id="total"></span></p>
-          </div>
-        </div>
+        <% } %>                
       </div>
       <div class="modal-footer">   
         <% if( lenArts != 0 ) { %>        
