@@ -1,6 +1,8 @@
 const UsuarioModel = require('../models/usuarios');
 const md5 = require('md5');
 const jwt = require("jsonwebtoken");
+const rutas = require('../middlewares/rutasProtegidas');
+const ItemModel = require('../models/items');
 
 module.exports = function(app) {
     
@@ -63,4 +65,29 @@ module.exports = function(app) {
     }
     
     });
+
+    app.get('/images-control', rutas.client, function(req, res){
+        const userData = {
+            user: req.session.user,
+            role: req.session.role,
+            logged: req.session.logged         
+          };
+        return res.render('images', {userData: userData});
+    });
+
+    app.get('/images/confirm/:id', async function(req, res) {
+        if( !req.param.id ) return res.json({ok: false, msg: "Provee un id"});
+        const decision = req.body.decision;
+        const id = req.param.id;
+
+        switch( decision ) {
+            case 'no':
+                await ItemModel.findByIdAndUpdate(id, { revisado: true })
+            break;
+            default:
+                await ItemModel.findByIdAndUpdate(id, { aprobado: true, revisado: true })
+            break;
+        }
+
+    });    
 }

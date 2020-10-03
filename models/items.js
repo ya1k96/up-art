@@ -23,6 +23,14 @@ var articuloSchema = new mongoose.Schema({
     actualizado: {
       type: Boolean,
       default: false
+    },
+    aprobado: {
+      type: Boolean,
+      default: true
+    },
+    revisado: {
+      type: Boolean,
+      default: false
     }
   });
 

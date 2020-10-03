@@ -30,11 +30,7 @@ function ingresoHandler(event) {
         $.post('/login', data, function(resp) {
             if(!resp.ok) {
                 alert("Contraseña o usuario incorrectos")
-            } else {
-                //let user = JSON.stringify({ token: resp.token, user: data.usuario, role: resp.role });
-                //Almacenamos el usuario en storage
-                //localStorage.setItem('user', user);
-
+            } else {                
                 let url = window.location.href;
                 let uri = url.split('/')[2];
                 let http = url.split('/')[0];
