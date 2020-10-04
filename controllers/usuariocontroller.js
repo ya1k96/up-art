@@ -91,12 +91,25 @@ module.exports = function(app) {
         return res.render('images', {userData: userData});
     });
     
-    app.get('/images-list', rutas.client, async function(req, res){
-        const articulos = await ItemModel.find()
-        .limit(20)
+    app.get('/images-list/:n', rutas.client, async function(req, res){
+        let pag = 0;
+        let limit = 20;
+        if (req.params.n) { pag = (req.params.n - 1) };
+
+        const articulos = await ItemModel.find({image: true})        
+        .skip( (pag * limit) )
+        .limit(limit)
         .exec();
+
+        const totalDocuments = await ItemModel.find({image: true}).count();
+        const totalPaginas = Math.round(totalDocuments/limit)
+        if( (totalDocuments % limit) > 0 ) totalPaginas + 1;
+
         return res.json({
-            articulos
+            articulos,
+            totalDocuments,
+            paginaActual: (pag + 1),
+            paginas: totalPaginas
         });
     });
 
@@ -145,6 +158,7 @@ module.exports = function(app) {
                 fs.unlinkSync(pathImg)
                                
                 item.img_url = imgUrl.url;
+                item.image = true;
                 await item.save();
 
             } catch (error) {
