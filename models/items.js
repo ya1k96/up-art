@@ -31,6 +31,10 @@ var articuloSchema = new mongoose.Schema({
     revisado: {
       type: Boolean,
       default: false
+    },
+    img_url: {
+      type: String,
+      default: 'https://res.cloudinary.com/jungoma/image/upload/v1601781044/ohih3abt3cbtwatzytyc.png'
     }
   });
 
