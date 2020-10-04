@@ -102,8 +102,7 @@ module.exports = function(app) {
         .exec();
 
         const totalDocuments = await ItemModel.find({image: true}).count();
-        const totalPaginas = Math.round(totalDocuments/limit)
-        if( (totalDocuments % limit) > 0 ) totalPaginas + 1;
+        const totalPaginas = Math.ceil(totalDocuments/limit)        
 
         return res.json({
             articulos,
@@ -114,7 +113,7 @@ module.exports = function(app) {
     });
 
     app.get('/buscar-articulo/:q', rutas.client, async function(req, res){
-        const articulos = await ItemModel.find({ codigo: req.params.q })
+        const articulos = await ItemModel.find({ codigo: req.params.q, image: true })
 
         return res.json({
             articulos

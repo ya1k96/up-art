@@ -2,8 +2,10 @@ new Vue({
     el: '#mainImages',
     data () {
         return {
-            items: null,
-            query: ''
+            items: [],
+            query: '',
+            paginas: 0,
+            actualPage: 1
         }
     },
     mounted () {
