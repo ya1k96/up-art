@@ -32,6 +32,12 @@ $(document).ready(function(){
         }
       }
     });
+    $('#todo-table').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'Imprimir'
+        ]
+    } );
   }
 
   if( $(".colapse") ) $('.collapse').collapse()  
