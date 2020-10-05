@@ -7,6 +7,10 @@ $(document).ready(function(){
 
   if( $('#todo-table') ) {
     $('#todo-table').DataTable({
+      dom: 'Bfrtip',
+        buttons: [
+            'print'
+        ],
       "language": {
         "sProcessing":    "Procesando...",
         "sLengthMenu":    "Mostrar _MENU_ registros",
@@ -30,11 +34,7 @@ $(document).ready(function(){
             "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
             "sSortDescending": ": Activar para ordenar la columna de manera descendente"
         }
-      },
-      dom: 'Bfrtip',
-        buttons: [
-            'Imprimir'
-        ]
+      }
     });
     
   }
