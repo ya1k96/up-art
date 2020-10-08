@@ -30,7 +30,11 @@ $(document).ready(function(){
             "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
             "sSortDescending": ": Activar para ordenar la columna de manera descendente"
         }
-      }
+      },
+      dom: 'Bfrtip',
+        buttons: [
+            'print'
+        ],
     });
   }
 
@@ -62,27 +66,29 @@ $(document).ready(function(){
     }) 
     
     $("#btnSave").on('click', function(e){
-      let btnSave = $("#btnSave")
-      let spinner = $('<div>', {
-        'html'  : '<span class="sr-only">Loading...</span>',
-        'class' : 'spinner-border spinner-border-sm'   ,
-        'role'  : 'status'            
+      let btnSave = $("#btnSave");
+      let progress = $('#progress');
+      //Creamos el elemento progressBar
+      let progressBar = $('<progress>', {
+        'html'  : '15%',
+        'class' : 'progress is-small is-primary'   ,
+        'max': '30%'        
       });
 
       btnSave.attr("disabled", true);
-      btnSave.append(spinner);
+      progressBar.append(progress);
 
       //peticion http a pedir liquidacion
       $.get('../pedir-liquidacion')
       .then( function (resp) {        
 
         let confirmacion = $('<div>', {          
-          'class' : ' animate__bounceIn alert'            
+          'class' : ' animate__bounceIn notification'            
         });        
-        resp.ok ? confirmacion.addClass(".success") : confirmacion.addClass(".danger");
+        resp.ok ? confirmacion.addClass(".is-success") : confirmacion.addClass(".is-danger");
         confirmacion.append(resp.msg);
 
-        spinner.fadeOut('fast');
+        progress.fadeOut('fast');
         btnSave.attr("disabled", false);
         $("#notificaciones").append(confirmacion);
 
@@ -99,37 +105,31 @@ $(document).ready(function(){
     //Lista que genera las liquidaciones hechas por el usuario
     $.get('../liquidacion-list')        
     .then(function(resp) {
-      $("#spinner").remove();
+      $(".progress.is-small.is-primary").remove();
       if( resp.length != 0 ) {
         resp.forEach( function(item) {
-          var cardL = `<div id="accordion" role="tablist">
-          <div class="card animate__bounceIn">
-            <div class="card-header" role="tab" id="heading${item._id}">
-              <h5 class="mb-0">
-                <a data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                  ${moment(item.createdAt).format('l')}
-                </a>
-              </h5>
-            </div>
-
-            <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-12">
-                  Art. Normales $${item.subTotalNormal}
-                </div>                
-                <div class="col-12">
-                  Art. Editados $${item.subTotalEspecial}
-                </div> 
-                <div class="col-12">
-                  Total $${item.total}
-                </div>
-                </div>                                                              
+          var cardL = `
+          <div class="column card animate__bounceIn">
+            
+            <div class="columns">
+              <div class="column is-12">
+              ${moment(item.createdAt).format('l')}
               </div>
-              
-            </div>
-          </div>
-        </div>`;        
+              <div class="column is-12">
+              Art. Normales $${item.subTotalNormal}
+              </div>
+
+              <div class="column is-12">
+              Art. Editados $${item.subTotalEspecial}
+              </div> 
+
+              <div class="column is-12">
+              Total $${item.total}
+              </div>
+                                                                            
+            </div>                
+
+          </div>`;        
         //<button class="btn btn-block btn-success">imprimir comprobante</button>   
         $("#liquidaciones").append(cardL);  
         })

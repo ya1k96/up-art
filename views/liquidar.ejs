@@ -2,9 +2,9 @@
 <%- include('partials/navbar', {userData}); %>
 
 <div id="liquidarFlag">
-    <div class="row">
-        <div class="offset-md-3 col-md-5 col-12">
-          <h2 class="display-4 text-white animate__bounceIn text-center">Calcular liquidacion</h2>
+    <div class="columns">
+        <div class="column is-6 is-offset-2">
+          <h2 class="title is-3 text-center animate__bounceIn text-center">Calcular liquidacion</h2>
             <div class="card bg-white p-4">
                 <span text-center><strong>Info gral</strong></span>
                 <pre>
@@ -15,17 +15,39 @@ Total articulos liquidados: <%= data.liquidado %>
                 <fieldset >
                     <input id="espCant" type="hidden" value="<%= data.especial %>">
                     <input id="normCant" type="hidden" value="<%= data.normal %>">
-                    <div class="form-group">
-                      <label for="cantidad">Cantidad a liquidar</label>
-                      <input type="number" maxlength="1000" minlength="1" min="1" max="1000" id="cantidad" value="0" class="form-control">
+                    <br>
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal">
+                        <label class="label" for="cantidad">Cantidad a liquidar</label>
+                      </div>
+                      <div class="field-body">
+                        <div class="field is-narrow">
+                          <div class="control">
+                            <input type="number" maxlength="1000" minlength="1" min="1" max="1000" id="cantidad" value="0" class="input">
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
-                    <div class="form-group">
-                      <label for="select">Tipo de articulo</label>
-                      <select id="select" class="form-control">
-                        <option>Todos</option>
-                        <option>Especial</option>
-                      </select>
+
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal">
+                        <label class="label">Tipo</label>
+                      </div>
+                      <div class="field-body">
+                        <div class="field is-narrow">
+                          <div class="control">
+                            <div class="select is-fullwidth">
+                              <select id="select">
+                                <option>Todos</option>
+                                <option>Especial</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
+
                     <!-- <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="check">
                         <label class="form-check-label" for="disabledFieldsetCheck">
@@ -38,7 +60,8 @@ Total articulos liquidados: <%= data.liquidado %>
                       let lenArts = (data.especial + data.normal ); 
                       if ( lenArts != 0 ) {
                     %>
-                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                      <br>
+                      <button type="button" class="button" id="btnModal">
                         Calcular
                       </button>
 
@@ -46,16 +69,12 @@ Total articulos liquidados: <%= data.liquidado %>
                   </fieldset>
             </div>
         </div>
-        <div class="col-md-3 col-12 p-0 mt-3">
-            <p class="display-4 mx-3" style="font-size: 2rem;">Liquidaciones</p>
+        <div class="column is-2">
+            <p class="subtitle is-4">Liquidaciones</p>
             
-            <div class="col-12" id="liquidaciones">
-              <div class="card" id="spinner">
-                  <div class="d-flex justify-content-center">
-                    <div class="spinner-border m-4" role="status">
-                    <span class="sr-only">Loading...</span>
-                  </div>                   
-              </div>                                 
+            <div class="" id="liquidaciones">
+              <progress class="progress is-small is-primary" max="100">15%</progress>                                   
+                                           
             </div>
             </div>
 
@@ -63,67 +82,112 @@ Total articulos liquidados: <%= data.liquidado %>
     </div>
 </div>
 
-
-<!-- Modal -->
-<div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">        
-        <h5 class="modal-title" id="exampleModalLabel">Liquidacion al dia <span id="fecha"></span></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>      
+<div class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Total acumulado</p>
+      <button class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
       <div id="notificaciones">
-      </div>   
-      <div class="modal-body pb-0" id="imprimir">      
+      </div>
+      <div class="column is-offset-1 is-11" id="imprimir">      
         <%         
           if ( lenArts != 0 ) {
         %>
-          <table class="table table-sm m-0">
-            <thead class="thead-dark">
-              <tr>
-                <th>Total Articulos</th>
-                <th>Tipo</th>
-                <th>Precio</th>
-                <th>Sub Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span id="cantEspecial"></span></td>
-                <td>Editados(especial)</td>
-                <td>$10</td>
-                <td><span id="subEsp"></span></td>
-              </tr>
-              <tr>
-                <td><span id="cantNormal"></span></td>
-                <td>Normal</td>
-                <td>$5</td>
-                <td><span id="subNormal"></span></td>
-              </tr>            
-            </tbody>
-          </table>
-          <div class="row">
-            <div class="offset-md-9 col-2 offset-9">
-              <p class="p-1"> Total $<span id="total"></span></p>
+        <!-- Cabecera -->
+          <div class="columns">
+            <div class="column">
+              <!-- <p class="subtitle is-6">Total Articulos</p> -->
+            </div>                        
+            <div class="column">
+              
+            </div>                      
+            <div class="column">
+              <p class="title is-6">Precio</p>
+            </div>                        
+            <div class="column">
+              <p class="title is-6">Sub Total</p>
+            </div>                      
+          </div>
+
+          <!-- Cuerpo -->
+
+          <!-- Primera fila -->
+          <div class="columns">
+            <div class="column is-6">
+              <p class="subtitle is-6">
+              <span id="cantEspecial"></span> x Editados
+              </p>
+            </div>                        
+            
+            <div class="column">
+              <p class="subtitle is-6">
+                $10
+              </p>
+            </div>                        
+            <div class="column">
+              <span class="title is-6" id="subEsp"></span>
+            </div>                      
+          </div>
+
+          <hr>
+
+          <!-- Segunda fila -->
+          <div class="columns">
+            <div class="column is-6">
+              <p class="subtitle is-6">
+                <span class="title is-6" id="cantNormal"></span> x Normal
+              </p>
+            </div>                        
+                                  
+            <div class="column">
+              <p class="subtitle is-6">
+                $5
+              </p>
+            </div>                        
+            <div class="column">
+              <span class="title is-6" id="subNormal"></span>
+            </div>                      
+          </div>
+
+          <hr>
+          <!-- Ultima Fila (TOTAL) -->
+          <div class="columns">
+            <div class="column is-2 is-offset-9">
+              <p class="title is-6">Total $<span class="subtitle is-6" id="total"></span></p>
             </div>
           </div>
+
         <% } else { %>        
-          <div class="d-flex justify-content-center">
-            <p>Estas al dia</p>
+          <div class="column">
+            <p class="text-center">Estas al dia</p>
           </div>  
         <% } %>                
       </div>
-      <div class="modal-footer">   
-        <% if( lenArts != 0 ) { %>        
-          <button type="button" id="btnSave" class="btn btn-success">Guardar</button>
-          <button type="button" id="btnPrint" class="btn btn-primary">Imprimir</button>
-        <% } %>          
-      </div>
-
-    </div>
+      <br>
+    </section>
+    <footer class="modal-card-foot">
+      <% if( lenArts != 0 ) { %>        
+        <button type="button" id="btnSave" class="button is-success">Guardar</button>
+        <button type="button" id="btnPrint" class="button">Imprimir</button>
+      <% } %>
+    </footer>
   </div>
 </div>
+<!-- Modal -->
+
 
 <%- include('partials/footer'); %>
+
+<script>
+  //Abrir modal
+  $('#btnModal').on('click', function() {
+    $('.modal').addClass('is-active');
+  });
+  //cerrar modal
+  $('.delete').on('click', function(){
+    $('.modal').removeClass('is-active');
+  })
+</script>
