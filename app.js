@@ -18,7 +18,7 @@ mongoose.connect(urlMongo,{ useMongoClient: true });
 const db = mongoose.connection;
 //Conexion a la base de datos
 db.once("open", function(){
-  console.log("Conectado a la bd")
+  console.log("Conectado a la bd");
 });
 db.on("error", function(){
   console.log("No se pudo conectar a la base de datos")

@@ -18,16 +18,25 @@ app.get('/', async function (request, response) {
       logged: request.session.logged         
     };
   
+  const info = { titulo: "Articulos" };
 
+  response.render("todo", { info: info, userData: userData });
+
+});
+
+app.get('/get-items', async function(req,res) {
   // obtenemos los articulos de db
   const doc = await ItemModel.find({});
   let lastUpdate = (await LogModel.find({}).sort({fecha: -1}))[0];
   //formateamos la fecha para hacerla legible
   let momentFecha = moment(lastUpdate.fecha).fromNow();
-  const info = { items: doc, titulo: "Articulos", fecha: momentFecha };
 
-  response.render("todo", { info: info, userData: userData });
+  const data = {
+    items: doc,
+    ultAct: momentFecha
+  };
 
+  res.json({ok: true, data});
 });
 
 app.get('/login', function(req, res) {
