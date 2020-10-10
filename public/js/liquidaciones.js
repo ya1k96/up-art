@@ -175,6 +175,8 @@ function guardarRequest(){
 }
 
 function verLiquidacion() {
+  this.attr('disabled', true);
+
   $("#btnSave").attr('disabled', true);
 
   let imprimirEl = $("#imprimir");
@@ -212,6 +214,8 @@ function verLiquidacion() {
       }, 500)
 
       abrirModal();
+
+      this.attr('disabled', false);
   });
 
 }
