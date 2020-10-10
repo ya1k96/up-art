@@ -175,7 +175,9 @@ function guardarRequest(){
 }
 
 function verLiquidacion() {
-  this.attr('disabled', true);
+  let element = $(this);
+  
+  element.attr('disabled', true);
 
   $("#btnSave").attr('disabled', true);
 
@@ -190,7 +192,7 @@ function verLiquidacion() {
 
   imprimirEl.append(progressBar);
 
-  let id_liquidacion = $(this).children('.id-liq')[0].value;
+  let id_liquidacion = element.children('.id-liq')[0].value;
 
   $.get('../liquidacion/' + id_liquidacion )
   .then(data => {
@@ -215,7 +217,7 @@ function verLiquidacion() {
 
       abrirModal();
 
-      this.attr('disabled', false);
+      element.attr('disabled', false);
   });
 
 }
