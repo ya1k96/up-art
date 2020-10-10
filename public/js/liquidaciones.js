@@ -21,18 +21,16 @@ $(document).ready(function(){
         
         resp.forEach( function(item) {
           article += `
-          <a class="panel-block is-active liquidacion">
+          <a class="panel-block liquidacion">
             <input class="id-liq" type="hidden" value="${item._id}">
             <span class="panel-icon">
-              <i class="fa fa-date" aria-hidden="true"></i>
+              <i class="fas fa-calendar-check" aria-hidden="true"></i>
             </span>
             ${moment(item.createdAt).format('l')}
-          </a>
-
-          </div>`;        
+          </a>`;        
         //<button class="btn btn-block btn-success">imprimir comprobante</button>   
       })
-      article += `</article></div>`;
+      article += `</article></div></div>`;
 
       $("#liquidaciones").append(article);  
 

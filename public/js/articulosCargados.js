@@ -26,10 +26,11 @@ $(document).ready(function(){
             }
           },
           dom: 'B<"clear">lfrtip',
-            buttons: [
-                { extend: 'print', className: 'button is-info', text: 'Imprimir'},
-                { extend: 'excel', className: 'button is-success'}
-            ],
+          buttons: [
+              { extend: 'print', className: 'button is-info', text: 'Imprimir'},
+              { extend: 'excel', className: 'button is-success'}
+          ],          
+
         });
       };
 });
