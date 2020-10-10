@@ -191,4 +191,9 @@ app.get('/liquidacion-list', async function(req, res){
   return res.json(liquidaciones);
 })
 
+app.get('/liquidacion/:id', async function(req, res){
+  const liquidacion = await LiquidacionModel.findById(req.params.id, ['createdAt','pagado','total', 'subTotalNormal','subTotalEspecial']);
+  return res.json(liquidacion);
+})
+
 };

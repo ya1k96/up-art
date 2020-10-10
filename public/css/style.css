@@ -7,6 +7,13 @@ hr {
     margin: 0.2rem;
 }
 
+article#liquidaciones {
+    margin: .7rem;
+}
+
+.margin-3 {
+    margin-top: 3rem;
+}
 /* #todo-table{
     position: relative;
     width: 95%;
