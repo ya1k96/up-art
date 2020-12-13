@@ -48,69 +48,42 @@ $(document).ready(function(){
 
 });
 
- function tablaFactura(cantE, subE, cantN, subN, total) {
-   return `<div class="columns">
-       <div class="column">
-         <!-- <p class="subtitle is-6">Total Articulos</p> -->
-       </div>                        
-       <div class="column">
-         
-       </div>                      
-       <div class="column">
-         <p class="title is-6">Precio</p>
-       </div>                        
-       <div class="column">
-         <p class="title is-6">Sub Total</p>
-       </div>                      
-     </div>
-   
-     <!-- Cuerpo -->
-   
-     <!-- Primera fila -->
-     <div class="columns">
-       <div class="column is-6">
-         <p class="subtitle is-6">
-         <span id="cantEspecial">${cantE}</span> x Editados
-         </p>
-       </div>                        
-       
-       <div class="column">
-         <p class="subtitle is-6">
-           $10
-         </p>
-       </div>                        
-       <div class="column">
-         <span class="title is-6" id="subEsp">${subE}</span>
-       </div>                      
-     </div>
-   
-     <hr>
-   
-     <!-- Segunda fila -->
-     <div class="columns">
-       <div class="column is-6">
-         <p class="subtitle is-6">
-           <span class="title is-6" id="cantNormal">${cantN}</span> x Normal
-         </p>
-       </div>                        
-                             
-       <div class="column">
-         <p class="subtitle is-6">
-           $5
-         </p>
-       </div>                        
-       <div class="column">
-         <span class="title is-6" id="subNormal">${subN}</span>
-       </div>                      
-     </div>
-   
-     <hr>
-     <!-- Ultima Fila (TOTAL) -->
-     <div class="columns">
-       <div class="column is-2 is-offset-9">
-         <p class="title is-6">Total $<span class="subtitle is-6" id="total">${total}</span></p>
-       </div>
-     </div>`;
+ function tablaFactura(cantE, subE, cantN, subN, total, titulo, fecha) {
+   return `
+        <p class="title is-5">${titulo} - <span class="subtitle is-5">${fecha}</span></p>          
+        <div class="columns">
+          <div class="">
+            <table class="table liqui">
+            <thead class="">
+              <tr>          
+                <th>Total Articulos</th>
+                <th>Precio</th>
+                <th>SubTotal</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>          
+                <th></th>
+                <th></th>
+                <th colspan="3">Total $<span class="subtitle is-6" id="total">${total}</span></th>
+              </tr>
+            </tfoot>
+            <tbody>
+              <tr>
+                <th><span id="cantEspecial">${cantE}</span> x Editados</th>
+                <td>10</td>
+                <td><span class="title is-6" id="subEsp">${subE}</span></td>
+              </tr>
+              <tr>
+                <th scope><span class="title is-6" id="cantNormal">${cantN}</span> x Normal</th>
+                <td>5</td>
+                <td><span class="title is-6" id="subNormal">${subN}</span></td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+     `;
 
 }
 
@@ -122,7 +95,7 @@ function reporteGral() {
   let totalPrecio = subtotalEsp + subtotalNorm;
   
   if( (cantNorm + cantEsp) != 0 ) {
-    let tabla = tablaFactura(cantEsp, subtotalEsp, cantNorm, subtotalNorm, totalPrecio);
+    let tabla = tablaFactura(cantEsp, subtotalEsp, cantNorm, subtotalNorm, totalPrecio, 'Reporte al dia', moment().format('l'));
 
     $("#imprimir").append(tabla);
   } 
@@ -130,7 +103,7 @@ function reporteGral() {
   $("#btnPrint").on("click", function() {
     $("#imprimir").printThis({
       importCSS: true,
-      header: "<h1>Liquidacion del dia</h1>"
+      header: "<p class="+ "text-center" +">Up - Art Gest. </p>"
     })   
   });
   
@@ -203,7 +176,7 @@ function verLiquidacion() {
           cantN = parseInt(subN, 10)/5,
           total = data.total;
       
-      let detalle = $(tablaFactura(cantE, subE, cantN, subN, total)).hide();
+      let detalle = $(tablaFactura(cantE, subE, cantN, subN, total, 'Liquidacion', moment(data.createdAt).format('l'))).hide();
 
       setTimeout(function() {
         progressBar.fadeOut('slow');
