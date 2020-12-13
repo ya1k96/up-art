@@ -12,20 +12,28 @@ const dbUser = process.env.DBUSER;
 const dbPass = process.env.DBPASS;
 const urlDB  = process.env.DBURL
 const urlMongo = 'mongodb://'+ dbUser + ':'+ dbPass + urlDB; 
-
 mongoose.connect(urlMongo,{ useMongoClient: true });
 
 const db = mongoose.connection;
 //Conexion a la base de datos
-db.once("open", function(){
-  console.log("Conectado a la bd")
-});
-db.on("error", function(){
-  console.log("No se pudo conectar a la base de datos")
-})
 
 var app = express();
 var urlencodedparser = bodyparser.urlencoded({ extended: true}); // ??
+
+db.once("open", function(){
+  console.log("Conectado a la bd")
+  todocontroller(app);
+  usuariocontroller(app);
+  proveedoresController(app);
+});
+
+db.on("error", function(er){
+  console.log("No se pudo conectar a la base de datos")
+  console.log(er);
+  app.get('/', function(req, res) {
+    res.render('events/error');
+  })
+})
 
 app.set('secreto', process.env.SECRET)
 app.use(session({
@@ -56,10 +64,6 @@ app.use((req, res, next) => {
 // Static files
 app.use(express.static('./public'));
 
-// Fire controllers
-todocontroller(app);
-usuariocontroller(app);
-proveedoresController(app);
 
 // Listen to port
 
