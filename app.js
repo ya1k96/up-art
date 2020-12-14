@@ -22,9 +22,6 @@ var urlencodedparser = bodyparser.urlencoded({ extended: true}); // ??
 
 db.once("open", function(){
   console.log("Conectado a la bd")
-  todocontroller(app);
-  usuariocontroller(app);
-  proveedoresController(app);
 });
 
 db.on("error", function(er){
@@ -64,6 +61,9 @@ app.use((req, res, next) => {
 // Static files
 app.use(express.static('./public'));
 
+todocontroller(app);
+usuariocontroller(app);
+proveedoresController(app);
 
 // Listen to port
 
