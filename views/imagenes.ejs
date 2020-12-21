@@ -1,0 +1,28 @@
+<%- include('partials/header', {titulo: 'Imagenes'}); %>
+<%- include('partials/navbar'); %>
+
+<br><br>
+    <div class="box column is-6 is-offset-3">
+      <div class="columns mt-4">
+        <div class="column is-10 is-offset-1">
+          <h2 class="title is-3 text-center">Cargar lote de imagenes</h2>
+        </div>
+      </div>
+      <div class="columns p-4">
+  
+        <div class="column is-10 is-offset-1">
+          <br>
+          <br>
+          <form id="forma" action='/imagenes' method="POST" enctype="multipart/form-data">
+              <input id="file" type="file" class="control" id="fileControl" name="image" multiple required>            
+              <br>
+              <br>
+              <input id="subir" type="submit" value="Subir" class="button is-info">
+          </form>
+        </div>
+        
+      </div>
+    </div>
+<br><br>
+
+<%- include('partials/footer'); %>

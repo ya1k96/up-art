@@ -1,12 +1,15 @@
 var express = require('express');
-var todocontroller = require('./controllers/todocontroller.js');
 var bodyparser = require('body-parser');
 const fileUpload = require('express-fileupload');
-const usuariocontroller = require('./controllers/usuariocontroller.js');
-const proveedoresController = require('./controllers/proveedores.js');
 require('dotenv').config()
 var mongoose = require('mongoose');
-var session = require('express-session')
+var session = require('express-session');
+
+//Controladores
+const todocontroller = require('./controllers/todocontroller.js');
+const usuariocontroller = require('./controllers/usuariocontroller.js');
+const proveedoresController = require('./controllers/proveedores.js');
+const imagenesController = require('./controllers/imagenes.js');
 
 const dbUser = process.env.DBUSER;
 const dbPass = process.env.DBPASS;
@@ -61,9 +64,11 @@ app.use((req, res, next) => {
 // Static files
 app.use(express.static('./public'));
 
+//controladores
 todocontroller(app);
 usuariocontroller(app);
 proveedoresController(app);
+imagenesController(app);
 
 // Listen to port
 

@@ -5,6 +5,10 @@ var articuloSchema = new mongoose.Schema({
       type: String,
       unique: true
     },
+    imagen: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'imagenes'
+    },
     fecha: {
       type: String,    
     },
@@ -17,7 +21,7 @@ var articuloSchema = new mongoose.Schema({
       type: Boolean, 
       default: false
     },
-    observacion: {
+    descripcion: {
       type: String
     },
     actualizado: {

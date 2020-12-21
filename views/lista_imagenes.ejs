@@ -1,0 +1,58 @@
+<%- include('partials/header', {titulo: 'Imagenes'}); %>
+<%- include('partials/navbar'); %>
+
+<br><br>
+    <div class="column is-12 p-0">
+      <div class="columns mt-1">
+        <div class="column is-10 is-offset-1">
+          <h2 class="title is-3 has-text-centered">Imagenes cargadas</h2>
+        </div>
+      </div>
+      <div class="columns p-4">
+  
+        <div class="column is-10 is-offset-1">
+          
+          <div class="field">
+            <p class="control has-icons-left">
+              <input class="input" type="text" placeholder="Codigo" id="buscarInput">
+              <span class="icon is-small is-left">
+                <i class="fas fa-search"></i>
+              </span>
+            </p>
+          </div>
+
+          <div class="control" id="tagZone" style="display: none;">
+            <div class="tags has-addons">
+              <a class="tag is-link" id="tagName"></a>
+              <a class="tag is-delete" id="closeTag"></a>
+            </div>
+          </div>
+
+          <br>
+          <br>
+
+          <!-- Indicador de carga -->
+          <progress class="progress is-large is-info" max="100" id="progressBar" style="display: none;">60%</progress>
+          <!--  -->
+
+          <!-- Despliegue del contenido -->
+          <div class="columns is-multiline is-desktop" id="content">
+          </div>
+          <!--  -->
+
+          <br>
+          <br>
+          
+          <div class="columns is-centered">            
+            <div class="column is-offset-5">
+              <nav class="pagination is-small" role="navigation" aria-label="pagination" id="pagination"></nav>
+            </div>
+          </div>
+
+        </div>
+        <div class="p-4"></div>
+      </div>
+    </div>
+<br><br>
+<script src="/js/lista-imagenes.js"></script>
+<%- include('partials/footer'); %>

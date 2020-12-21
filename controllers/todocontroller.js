@@ -40,6 +40,54 @@ app.get('/login', function(req, res) {
   return res.render('login', {userData: userData});
 })
 
+app.post('/upload-description', rutas.admin, async function(req,res) {
+
+  
+  if( !req.files.file ) {
+    return res.redirect(403,'../error-upload');
+  }
+
+  let archivo = req.files.file;
+  //Guardamos el tipo de archivo para corroborar
+  let mimetype = archivo.name;
+
+  if(!mimetype.includes('csv')) {
+    //Error de tipo
+    return res.status(401).json({
+      msg: "Este tipo de archivo no esta permitido"
+    })
+  }
+
+  const pathcsv = `./public/files/${archivo.name}`;
+  archivo.mv(pathcsv,err => {
+    if(err) return res.status(500).json({ ok:false, msg: err });
+  })
+
+  const lista = await csvtojsonV2().fromFile(pathcsv);
+
+  if(lista.length > 0) {
+
+     lista.forEach( async function(item) {
+       //Buscamos el item
+       const itemDB = await ItemModel.find({codigo: item.codigo});
+       
+       //Nos aseguramos de que el item se encuentra en la base de datos
+        if( itemDB.length === 1) {
+          //Guardamos la nueva descripcion del item
+          itemDB.descripcion = item.descripcion;
+          await itemDB.save();        
+        }
+      })
+
+      let resp = {ok: true, msg:'Tus datos fueron cargados'};
+
+      return res.json(resp);
+
+  } else {
+    return res.json({ok: false, msg: "El documento esta vacio"})
+  }
+})
+
 app.post('/upload', rutas.admin, async function(req,res) {
 
   
@@ -66,12 +114,11 @@ app.post('/upload', rutas.admin, async function(req,res) {
     let fecha = moment();
     await new LogModel({fecha}).save()
 
-    let archivoJson = [];
      lista.forEach( async function(item) {
       let data = {
         codigo: item.normales,
         tipoArticulo: 'Normal',
-        observacion: item.observacion
+        descripcion: item.descripcion
       }
 
       if( !item.normales.length > 0) {
@@ -82,12 +129,19 @@ app.post('/upload', rutas.admin, async function(req,res) {
       try {
         await ItemModel(data).save();
       } catch (error) {
-        archivoJson.push(data.codigo)
+
+        if( error.code === 11000 ) {
+          const itemDB = (await ItemModel.find({codigo: error.keyValue.codigo}))[0];
+          itemDB.descripcion = item.descripcion;
+
+          await itemDB.save();
+        }
+
       }
       
       })
-      let resp = {ok: true, msg:'Tus datos fueron cargados', articulosRechazados: archivoJson};
 
+      let resp = {ok: true, msg:'Tus datos fueron cargados'};
 
       return res.json(resp);
 

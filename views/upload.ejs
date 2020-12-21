@@ -1,16 +1,37 @@
 <%- include('partials/header', {titulo: 'Subir'}); %>
 <%- include('partials/navbar', {userData}); %>
 <br><br>
-    <div class="box column is-6 is-offset-3">
-      <div class="columns mt-4">
+    <div class="column is-6 is-offset-3"> 
+
+      <div class="columns mb-4 pb-4">
         <div class="column is-10 is-offset-1">
-          <h2 class="title is-3 text-center">Cargar archivo .CSV</h2>
+          <h2 class="title is-3 text-center">Cargar articulos .CSV</h2>
         </div>
-      </div>
-      <div class="columns p-4">
-  
+      </div>      
+
+      <div class="tabs is-centered is-boxed">
+        <ul id="tabs">
+          <li class="tab-per is-active">
+            <a>
+              <span class="icon is-small"><i class="fas fa-image" aria-hidden="true"></i></span>
+              <span>Nuevos</span>
+            </a>
+          </li>
+          <li class="tab-per">
+            <a>
+              <span class="icon is-small"><i class="fas fa-music" aria-hidden="true"></i></span>
+              <span>Descripciones</span>
+            </a>
+          </li>          
+        </ul>
+      </div> 
+      
+      <div class="card">
+        <!-- Formulario para los articulos nuevos -->
+      <div class="columns p-4" id="formaNuevos">        
+        
         <div class="column is-10 is-offset-1">
-          <br>
+          <p class="has-text-centered"> <strong>Carga nuevos items</strong></p>
           <br>
           <form id="forma" action='/upload' method="POST" enctype="multipart/form-data">
               <input id="file" type="file" class="control" id="fileControl" name="file" required>            
@@ -21,6 +42,27 @@
         </div>
         
       </div>
+      <!--  -->
+
+      <!-- Formulario para las descripciones -->
+      <div class="columns p-4" id="formaDescripciones" style="display: none;">
+
+        <div class="column is-10 is-offset-1">
+          <p class="has-text-centered"> <strong>Actualiza las descripciones de los items cargados</strong></p>
+          <br>
+          <form id="forma" action='/upload-description' method="POST" enctype="multipart/form-data">
+              <input id="file" type="file" class="control" id="fileControl" name="file" required>            
+              <br>
+              <br>
+              <input id="subir" type="submit" value="Subir" class="button is-info">
+          </form>
+        </div>
+        
+      </div>  
+      <!--  -->
+      </div>
+     
     </div>
 <br><br>
+<script src="/js/upload.js"></script>
 <%- include('partials/footer'); %>
