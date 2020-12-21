@@ -50,7 +50,7 @@ module.exports = function(app) {
         
         const result = await imagenes_model.paginate({
         }, options);
-
+      
 
         return res.json({
             ok: true,
@@ -109,7 +109,7 @@ module.exports = function(app) {
 
         } else {           
             archivos.forEach( archivo => {
-                let ext = path.extname(archivo.name);
+                let ext = (path.extname(archivo.name)).toLowerCase();
                 if ( ext === '.jpg' || ext === '.jpeg' || ext  ==='.png' ) {                                                 
                     
                     //Configuracion de la direccion del archivo

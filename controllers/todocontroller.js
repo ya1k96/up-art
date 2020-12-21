@@ -1,6 +1,7 @@
 const csvtojsonV2=require("csvtojson");
 const ItemModel = require('../models/items');
 const LogModel = require('../models/logs');
+const ImagenesModel = require('../models/imagenes');
 const LiquidacionModel = require('../models/liquidacion');
 const moment = require('moment');
 require('dotenv').config()
@@ -10,6 +11,32 @@ const rutas = require('../middlewares/rutasProtegidas');
 moment.locale('es-es');
 
 module.exports = function(app) {
+
+// app.get('/asoc', async (req, res) => {
+//   const items = await ItemModel.find({});
+//   items.forEach(async el => { 
+//     const auxName = el.codigo.split(' ');
+//     let nameQuery = '';
+
+//     if(auxName.length > 0) {
+//       for (let index = 0; index < auxName.length; index++) {
+//         nameQuery += auxName[index] + (index === auxName.length ? '' : '-');
+        
+//       }
+      
+//     }
+
+//     let img = await ImagenesModel.find({code_name: ''});
+
+//     if( img.length === 1 ) {
+//       el.imagen = img[0]._id;
+//       await el.save();
+//     }
+//    })
+//     res.json({
+//       ok: true
+//     })
+// });
 
 app.get('/', async function (request, response) {
     const userData = {
@@ -74,8 +101,8 @@ app.post('/upload-description', rutas.admin, async function(req,res) {
        //Nos aseguramos de que el item se encuentra en la base de datos
         if( itemDB.length === 1) {
           //Guardamos la nueva descripcion del item
-          itemDB.descripcion = item.descripcion;
-          await itemDB.save();        
+          itemDB[0].descripcion = item.descripcion;
+          await itemDB[0].save();        
         }
       })
 

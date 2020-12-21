@@ -76,6 +76,9 @@ $(document).ready(function() {
                             </strong></p>
                             <br>
                             <time>${moment(doc.createdAt).fromNow()}</time>
+                            <p>
+                                ${doc.descripcion ? doc.descripcion : ''}
+                            </p>
                         </div>
                         </div>
                         <!-- <footer class="card-footer">

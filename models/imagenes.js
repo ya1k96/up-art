@@ -17,6 +17,9 @@ var imgSchema = new mongoose.Schema({
     },
     comentario: {
         type: String
+    },
+    descripcion: {
+        type: String
     }
 }, { timestamps: true });
 
