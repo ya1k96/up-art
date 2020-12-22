@@ -1,13 +1,14 @@
 const csvtojsonV2=require("csvtojson");
 const ItemModel = require('../models/items');
 const LogModel = require('../models/logs');
-const ImagenesModel = require('../models/imagenes');
+const PrecioModel = require('../models/precio');
 const LiquidacionModel = require('../models/liquidacion');
 const moment = require('moment');
 require('dotenv').config()
 
 //midleware 
 const rutas = require('../middlewares/rutasProtegidas');
+const imagenes = require("../models/imagenes");
 moment.locale('es-es');
 
 module.exports = function(app) {
@@ -44,7 +45,6 @@ app.get('/', async function (request, response) {
       role: request.session.role,
       logged: request.session.logged         
     };
-  
 
   // obtenemos los articulos de db
   const doc = await ItemModel.find({});
@@ -91,28 +91,29 @@ app.post('/upload-description', rutas.admin, async function(req,res) {
   })
 
   const lista = await csvtojsonV2().fromFile(pathcsv);
-
+  let codigoAux;
   if(lista.length > 0) {
 
      lista.forEach( async function(item) {
+       codigoAux = (item.codigo.split(' ')).join('-');
+       codigoAux = (codigoAux.split('/')).join('-');
        //Buscamos el item
-       const itemDB = await ItemModel.find({codigo: item.codigo});
-       
+       const itemDB = await imagenes.find({code_name: codigoAux});
        //Nos aseguramos de que el item se encuentra en la base de datos
-        if( itemDB.length === 1) {
-          //Guardamos la nueva descripcion del item
-          itemDB[0].descripcion = item.descripcion;
-          await itemDB[0].save();        
-        }
+         if( itemDB.length === 1) {
+           //Guardamos la nueva descripcion del item
+           itemDB[0].descripcion = item.descripcion;
+           await itemDB[0].save();        
+         }
       })
 
       let resp = {ok: true, msg:'Tus datos fueron cargados'};
 
-      return res.json(resp);
-
-  } else {
-    return res.json({ok: false, msg: "El documento esta vacio"})
-  }
+      
+    } else {
+      return res.json({ok: false, msg: "El documento esta vacio"})
+    }
+    return res.json({ok: true, msg: 'Cargado'});
 })
 
 app.post('/upload', rutas.admin, async function(req,res) {
@@ -196,12 +197,17 @@ app.get('/liquidar', rutas.client, async function(req,res) {
   const articulosALiquidar = await ItemModel.find({liquidado: false});
   const normal = articulosALiquidar.filter( item => item.tipoArticulo === 'Normal');
   const especial = articulosALiquidar.filter( item => item.tipoArticulo === 'Especial');
+  const listaPrecios = await PrecioModel.find({});
+  const precioNormal = (listaPrecios.filter( item => item.type === 'Normal'))[0].precio;
+  const precioEspecial = (listaPrecios.filter( item => item.type === 'Especial'))[0].precio;
 
   let liquidado = await ItemModel.find({liquidado: true});
   let data = {
     normal: normal.length,
     especial: especial.length, 
-    liquidado: liquidado.length    
+    liquidado: liquidado.length,
+    precioEspecial,
+    precioNormal 
   };
 
   const userData = {
@@ -224,13 +230,20 @@ app.get('/pedir-liquidacion', rutas.client, async function(req, res) {
   const articulosALiquidar = await ItemModel.find({liquidado: false});
   const listaNormal = articulosALiquidar.filter( item => item.tipoArticulo === 'Normal');
   const listaEspecial = articulosALiquidar.filter( item => item.tipoArticulo === 'Especial');
+  const listaPrecios = await PrecioModel.find({});
+  const precioNormal = (listaPrecios.filter( item => item.type === 'Normal'))[0].precio;
+  const precioEspecial = (listaPrecios.filter( item => item.type === 'Especial'))[0].precio;
 
   let resp = { ok: false, msg: "Ha ocurrido un error. intenta nuevamente mas tarde"}
 
   if( articulosALiquidar.length > 0 ) {
-    lToAdd.subTotalNormal = listaNormal.length * 5 
-    lToAdd.subTotalEspecial = listaEspecial.length * 10 
-    lToAdd.total = (lToAdd.subTotalEspecial + lToAdd.subTotalNormal)
+    lToAdd.subTotalNormal = listaNormal.length * precioNormal;
+    lToAdd.subTotalEspecial = listaEspecial.length * precioEspecial;
+    lToAdd.total = (lToAdd.subTotalEspecial + lToAdd.subTotalNormal);
+    lToAdd.cantNormal = listaNormal.length;
+    lToAdd.cantEspecial = listaNormal.length;
+    lToAdd.precioEspecial = precioEspecial;
+    lToAdd.precioNormal = precioNormal;
 
     articulosALiquidar.forEach(async (item) => {
       item.liquidado = true; 

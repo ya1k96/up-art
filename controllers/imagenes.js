@@ -137,8 +137,15 @@ module.exports = function(app) {
                             //Borramos la imagen del directorio
                             fs.unlink(img_path);
 
+                            try {
+                                await imagenes_model(new_image).save();                                
+                            } catch (error) {
+                                if( error.code === 11000 ) {
+                                   //Borrar del archivo cloudinary
+                                   await cloudinary.v2.uploader.destroy(resp.public_id);
+                                  }
+                            }
                             //El archivo se guarda en la base de datos
-                            await imagenes_model(new_image).save();
                         }
                     });
                     

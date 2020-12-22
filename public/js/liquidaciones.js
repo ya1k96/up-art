@@ -71,12 +71,12 @@ $(document).ready(function(){
             <tbody>
               <tr>
                 <th><span id="cantEspecial">${cantE}</span> x Editados</th>
-                <td>10</td>
+                <td>${ precioEspecial() }</td>
                 <td><span class="title is-6" id="subEsp">${subE}</span></td>
               </tr>
               <tr>
                 <th scope><span class="title is-6" id="cantNormal">${cantN}</span> x Normal</th>
-                <td>5</td>
+                <td>${ precioNormal() }</td>
                 <td><span class="title is-6" id="subNormal">${subN}</span></td>
               </tr>
             </tbody>
@@ -90,8 +90,8 @@ $(document).ready(function(){
 function reporteGral() {  
   let cantNorm = cantidadNormal();
   let cantEsp = cantidadEspecial();
-  let subtotalEsp = cantEsp * 10;
-  let subtotalNorm = cantNorm * 5;
+  let subtotalEsp = cantEsp * precioEspecial();
+  let subtotalNorm = cantNorm * precioNormal();
   let totalPrecio = subtotalEsp + subtotalNorm;
   
   if( (cantNorm + cantEsp) != 0 ) {
@@ -172,8 +172,8 @@ function verLiquidacion() {
 
       let subE = data.subTotalEspecial,
           subN = data.subTotalNormal,
-          cantE = parseInt(subE, 10)/10,
-          cantN = parseInt(subN, 10)/5,
+          cantE = parseInt(subE, 10)/ precioEspecial(),
+          cantN = parseInt(subN, 10)/ precioNormal(),
           total = data.total;
       
       let detalle = $(tablaFactura(cantE, subE, cantN, subN, total, 'Liquidacion', moment(data.createdAt).format('l'))).hide();
@@ -201,6 +201,14 @@ function cantidadNormal() {
 
 function cantidadEspecial() {
   return parseInt($("#espCant").val(), 10);
+}
+
+function precioNormal() {
+  return parseInt($("#precioNormal").val(), 10);
+}
+
+function precioEspecial() {
+  return parseInt($("#precioEspecial").val(), 10);
 }
 
 function abrirModal() {

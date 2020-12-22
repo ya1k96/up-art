@@ -74,11 +74,10 @@ $(document).ready(function() {
                             <p><strong>
                             ${doc.code_name}
                             </strong></p>
-                            <br>
-                            <time>${moment(doc.createdAt).fromNow()}</time>
                             <p>
-                                ${doc.descripcion ? doc.descripcion : ''}
+                            ${doc.descripcion ? doc.descripcion : ''}
                             </p>
+                            <time>${moment(doc.createdAt).fromNow()}</time>
                         </div>
                         </div>
                         <!-- <footer class="card-footer">
