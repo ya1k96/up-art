@@ -48,7 +48,7 @@ $(document).ready(function(){
 
 });
 
- function tablaFactura(cantE, subE, cantN, subN, total, titulo, fecha) {
+ function tablaFactura(cantE, subE, cantN, subN, total, titulo, fecha, precioEsp, precioNor) {
    return `
         <p class="title is-5">${titulo} - <span class="subtitle is-5">${fecha}</span></p>          
         <div class="columns">
@@ -71,12 +71,12 @@ $(document).ready(function(){
             <tbody>
               <tr>
                 <th><span id="cantEspecial">${cantE}</span> x Editados</th>
-                <td>${ precioEspecial() }</td>
+                <td>${ precioEsp }</td>
                 <td><span class="title is-6" id="subEsp">${subE}</span></td>
               </tr>
               <tr>
                 <th scope><span class="title is-6" id="cantNormal">${cantN}</span> x Normal</th>
-                <td>${ precioNormal() }</td>
+                <td>${ precioNor }</td>
                 <td><span class="title is-6" id="subNormal">${subN}</span></td>
               </tr>
             </tbody>
@@ -95,7 +95,7 @@ function reporteGral() {
   let totalPrecio = subtotalEsp + subtotalNorm;
   
   if( (cantNorm + cantEsp) != 0 ) {
-    let tabla = tablaFactura(cantEsp, subtotalEsp, cantNorm, subtotalNorm, totalPrecio, 'Reporte al dia', moment().format('l'));
+    let tabla = tablaFactura(cantEsp, subtotalEsp, cantNorm, subtotalNorm, totalPrecio, 'Reporte al dia', moment().format('l'), precioEspecial(), precioNormal());
 
     $("#imprimir").append(tabla);
   } 
@@ -170,16 +170,21 @@ function verLiquidacion() {
   $.get('../liquidacion/' + id_liquidacion )
   .then(data => {
 
-      let subE = data.subTotalEspecial,
-          subN = data.subTotalNormal,
-          cantE = parseInt(subE, 10)/ precioEspecial(),
-          cantN = parseInt(subN, 10)/ precioNormal(),
-          total = data.total;
+      const listaDetalle = data.liquidacionDetalle;
       
-      let detalle = $(tablaFactura(cantE, subE, cantN, subN, total, 'Liquidacion', moment(data.createdAt).format('l'))).hide();
+      const detalleNormales = listaDetalle.find( el => el.tipoArticulo === 'Normales' );
+      const detalleEspeciales = listaDetalle.find( el => el.tipoArticulo === 'Especiales' );
+
+      let subE = detalleEspeciales.subTotal,
+          subN = detalleNormales.subTotal,
+          cantE = detalleEspeciales.cantidad,
+          cantN = detalleNormales.cantidad,
+          total = data.total;    
+      
+      let detalle = $(tablaFactura(cantE, subE, cantN, subN, total, 'Liquidacion', moment(data.createdAt).format('l')),  detalleEspeciales.precio, detalleNormales.precio).hide();
 
       setTimeout(function() {
-        progressBar.fadeOut('slow');
+        progressBar.hide();
       }, 500)
 
       imprimirEl.append(detalle);

@@ -3,6 +3,7 @@ const ItemModel = require('../models/items');
 const LogModel = require('../models/logs');
 const PrecioModel = require('../models/precio');
 const LiquidacionModel = require('../models/liquidacion');
+const LiquidacionDetalle = require("../models/liquidacionDetalle");
 const moment = require('moment');
 require('dotenv').config()
 
@@ -198,17 +199,17 @@ app.get('/liquidar', rutas.client, async function(req,res) {
   const normal = articulosALiquidar.filter( item => item.tipoArticulo === 'Normal');
   const especial = articulosALiquidar.filter( item => item.tipoArticulo === 'Especial');
   const listaPrecios = await PrecioModel.find({});
-  const precioNormal = (listaPrecios.filter( item => item.type === 'Normal'))[0].precio;
-  const precioEspecial = (listaPrecios.filter( item => item.type === 'Especial'))[0].precio;
+  const precioNormal = listaPrecios[1].precio;
+  const precioEspecial = listaPrecios[0].precio;
 
-  let liquidado = await ItemModel.find({liquidado: true});
   let data = {
     normal: normal.length,
     especial: especial.length, 
-    liquidado: liquidado.length,
     precioEspecial,
     precioNormal 
   };
+
+  console.log(data);
 
   const userData = {
     user: req.session.user,
@@ -220,44 +221,48 @@ app.get('/liquidar', rutas.client, async function(req,res) {
 });
 
 app.get('/pedir-liquidacion', rutas.client, async function(req, res) {
-  let lToAdd = {
-    articulos: [],
-    subTotalNormal: 0.0,
-    subTotalEspecial: 0.0,
-    total: 0.0,
-    pagado: false
-  }
+  
   const articulosALiquidar = await ItemModel.find({liquidado: false});
+
   const listaNormal = articulosALiquidar.filter( item => item.tipoArticulo === 'Normal');
   const listaEspecial = articulosALiquidar.filter( item => item.tipoArticulo === 'Especial');
+
   const listaPrecios = await PrecioModel.find({});
-  const precioNormal = (listaPrecios.filter( item => item.type === 'Normal'))[0].precio;
-  const precioEspecial = (listaPrecios.filter( item => item.type === 'Especial'))[0].precio;
 
-  let resp = { ok: false, msg: "Ha ocurrido un error. intenta nuevamente mas tarde"}
+  const precioNormal = listaPrecios[1].precio;
+  const precioEspecial = listaPrecios[0].precio;
 
-  if( articulosALiquidar.length > 0 ) {
-    lToAdd.subTotalNormal = listaNormal.length * precioNormal;
-    lToAdd.subTotalEspecial = listaEspecial.length * precioEspecial;
-    lToAdd.total = (lToAdd.subTotalEspecial + lToAdd.subTotalNormal);
-    lToAdd.cantNormal = listaNormal.length;
-    lToAdd.cantEspecial = listaNormal.length;
-    lToAdd.precioEspecial = precioEspecial;
-    lToAdd.precioNormal = precioNormal;
+  let liquidacionDetalleNormal = null;
+  let liquidacionDetalleEspecial = null;
 
-    articulosALiquidar.forEach(async (item) => {
-      item.liquidado = true; 
-      lToAdd.articulos.push(item._id);      
-      await item.save();
-    })    
+  if( listaNormal.length > 0 ) {    
 
-    if(await LiquidacionModel(lToAdd).save()) {
-      resp.ok = true
-      resp.msg = "Exito"
-    }
+    liquidacionDetalleNormal = await LiquidacionDetalle({
+      articulos: listaNormal.map(el => el._id ),
+      precio: precioNormal,
+      cantidad: listaNormal.length,
+      subtotal: precioNormal * listaNormal.length      
+    }).save();
+
   }
+
+  if( listaEspecial.length > 0 ) {
+    liquidacionDetalleEspecial = await LiquidacionModel({
+      articulos: listaEspecial.map(el => el._id ),
+      precio: precioEspecial,
+      cantidad: listaEspecial.length,
+      subtotal: precioEspecial * listaEspecial.length
+    }).save();
+  }
+
+  await LiquidacionModel({
+    liquidacionDetalle: [
+      liquidacionDetalleEspecial._id,liquidacionDetalleNormal._id
+    ],
+    total: (listaEspecial.length * precioEspecial) + (listaNormal * precioNormal)    
+  }).save();
   
-  return res.json(resp)
+  return res.json({ok: true});
 });
 
 app.get('/rollback/:id', rutas.admin, async function(req, res) {
@@ -281,13 +286,23 @@ app.get('/rollback/:id', rutas.admin, async function(req, res) {
 
 //Unicamente AJAX
 app.get('/liquidacion-list', async function(req, res){
-  const liquidaciones = await LiquidacionModel.find({}, ['createdAt','pagado','total', 'subTotalNormal','subTotalEspecial']);
+  const liquidaciones = await LiquidacionModel.find({}, ['createdAt','pagado','total'])
+  .populate('liquidacionDetalle')
   return res.json(liquidaciones);
 })
 
 app.get('/liquidacion/:id', async function(req, res){
-  const liquidacion = await LiquidacionModel.findById(req.params.id, ['createdAt','pagado','total', 'subTotalNormal','subTotalEspecial']);
+  const liquidacion = await LiquidacionModel.findById(req.params.id, ['createdAt','pagado','total'])
+  .populate('liquidacionDetalle')
   return res.json(liquidacion);
 })
+  
+  function liquidarITems(lista) {
+    lista.forEach(async (item) => {
+      item.liquidado = true; 
+      await item.save();
+    })    
+
+  }
 
 };

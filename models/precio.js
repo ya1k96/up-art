@@ -4,7 +4,7 @@ var precioSchema = new mongoose.Schema({
     precio: {
         type: Number
     },
-    type: {
+    tipoArticulo: {
         type: String
     }
 });
