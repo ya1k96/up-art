@@ -33,4 +33,7 @@ $(document).ready(function(){
 
         });
       };
+
+      $('#todo-table').show();
+      $('#progressBar').hide();
 });

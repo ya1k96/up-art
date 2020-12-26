@@ -11,8 +11,11 @@
           <span class="subtitle is-5">
             Ultima actualizacion: <span id="fechaLU"><%= info.fecha %></span>
           </span>
-        </p>       
-        <table id="todo-table" class="table is-hoverable">
+        </p>     
+
+        <progress class="progress is-large is-info" max="100" id="progressBar" style="display: none;">60%</progress>
+
+        <table id="todo-table" class="table is-hoverable" style="display: none;">
           <thead>
             <tr>
               <th>Codigo</th>
