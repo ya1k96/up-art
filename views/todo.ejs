@@ -13,7 +13,7 @@
           </span>
         </p>     
 
-        <progress class="progress is-large is-info" max="100" id="progressBar" style="display: none;">60%</progress>
+        <progress class="progress is-large is-info" max="100" id="progressBar">60%</progress>
 
         <table id="todo-table" class="table is-hoverable" style="display: none;">
           <thead>
@@ -29,6 +29,7 @@
               <% for(var i = 0; i < info.items.length; i++) { %>
                 <tr>
                   <td><%= info.items[i].codigo %></td>
+                  <input type="hidden" name="id" value="<% info.items[i]._id %>">
                   <% if(!info.items[i].liquidado) { %>
                     <td>Pendiente</td>
                   <% }  %>

@@ -31,7 +31,7 @@ module.exports = function(app) {
         
         if( md5(user.contras) === dbUser.contras ) {
 
-            const payload = { usuario: user.usuario };
+            const payload = { usuario: user.usuario, role: dbUser.role };
             const token = jwt.sign(payload, app.get('secreto'), {
                 expiresIn: (1440 * 120 * 2)
             });
@@ -44,7 +44,8 @@ module.exports = function(app) {
 
             return res.json({
                 ok: true,
-                msg: 'Autorizado'
+                msg: 'Autorizado',
+                token
             })
 
         } else {
@@ -63,4 +64,25 @@ module.exports = function(app) {
     }
     
     });
+
+    app.get('/esUsuario', (req, res) => {
+        const token = req.query.token;
+
+        if (token) {
+            jwt.verify(token, process.env.SECRET, (err, decoded) => {      
+                if (err) {
+                    return res.json({ ok: false, mensaje: 'Token inválida' });    
+                } else {
+                    return res.json({ ok: true, decoded });    
+                }
+            });
+        } else {
+            return res.json({ 
+                mensaje: 'Token no proveída.' 
+            });
+        }
+       
+        
+          
+    })
 }

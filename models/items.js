@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2');
 // Create Schema
 var articuloSchema = new mongoose.Schema({
     codigo: {
@@ -29,5 +30,6 @@ var articuloSchema = new mongoose.Schema({
       default: false
     }
   });
-
+  articuloSchema.plugin(mongoosePaginate);
+  
   module.exports = mongoose.model('articulos', articuloSchema);

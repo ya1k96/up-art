@@ -58,6 +58,34 @@ app.get('/', async function (request, response) {
 
 });
 
+app.get('/api/articulos/:pagina', async function (req, response) {
+    const pagina = req.params.pagina ? req.params.pagina : 1;
+    const cantidad = req.query.cantidad ? req.query.cantidad : 25;
+    const options = {
+        page: pagina,
+        limit: cantidad            
+    };
+    const userData = {
+      user: req.session.user,
+      role: req.session.role,
+      logged: req.session.logged         
+    };
+
+  // obtenemos los articulos de db
+  const doc = await ItemModel.paginate({}, options );
+
+  let lastUpdate = (await LogModel.find({}).sort({fecha: -1}))[0];
+  //formateamos la fecha para hacerla legible
+  let momentFecha = moment(lastUpdate.fecha).fromNow();
+  const info = { doc, titulo: "Articulos", fecha: momentFecha };
+  
+  return response.json({
+    ok: true,
+    items: info,
+    userData
+  });
+});
+
 app.get('/login', function(req, res) {
   const userData = {
     user: req.session.user,
