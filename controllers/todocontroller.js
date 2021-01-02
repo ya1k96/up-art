@@ -6,7 +6,7 @@ const LiquidacionModel = require('../models/liquidacion');
 const LiquidacionDetalle = require("../models/liquidacionDetalle");
 const moment = require('moment');
 require('dotenv').config()
-
+const path = require('path');
 //midleware 
 const rutas = require('../middlewares/rutasProtegidas');
 const imagenes = require("../models/imagenes");
@@ -40,23 +40,7 @@ module.exports = function(app) {
 //     })
 // });
 
-app.get('/', async function (request, response) {
-    const userData = {
-      user: request.session.user,
-      role: request.session.role,
-      logged: request.session.logged         
-    };
 
-  // obtenemos los articulos de db
-  const doc = await ItemModel.find({});
-  let lastUpdate = (await LogModel.find({}).sort({fecha: -1}))[0];
-  //formateamos la fecha para hacerla legible
-  let momentFecha = moment(lastUpdate.fecha).fromNow();
-  const info = { items: doc, titulo: "Articulos", fecha: momentFecha };
-
-  response.render("todo", { info: info, userData: userData });
-
-});
 
 app.get('/api/articulos/:pagina', async function (req, response) {
     const pagina = req.params.pagina ? req.params.pagina : 1;

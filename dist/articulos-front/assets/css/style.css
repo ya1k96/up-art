@@ -1,0 +1,26 @@
+body{
+    background: #ffffff;
+    color: #989898;
+}
+
+hr {
+    margin: 0.2rem;
+}
+
+article#liquidaciones {
+    margin: .7rem;
+}
+
+.margin-3 {
+    margin-top: 3rem;
+}
+
+.table.liqui {
+    width: 600px;
+}
+
+@media (max-width: 768px) {
+    .table.liqui {
+        width: 340px;
+    }   
+}

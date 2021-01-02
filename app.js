@@ -4,6 +4,7 @@ const fileUpload = require('express-fileupload');
 require('dotenv').config()
 var mongoose = require('mongoose');
 var session = require('express-session');
+const path = require('path');
 
 //Controladores
 const todocontroller = require('./controllers/todocontroller.js');
@@ -50,19 +51,16 @@ app.use(urlencodedparser)
 app.use(bodyparser.json())
 app.use(fileUpload())
 // Set up template engine
-app.set('view engine', 'ejs');
-
-//configuracion de cors
-app.use((req, res, next) => {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-	res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
-	next();
-});
 
 // Static files
-app.use(express.static('./public'));
+const pathFile = path.join(__dirname, 'dist/articulos-front' );
+app.use(express.static(pathFile));
+
+app.get('/', async function (request, response) {
+    response.sendFile('index.html', {root: 'dist/articulos-front'});
+
+});
+
 
 //controladores
 todocontroller(app);
