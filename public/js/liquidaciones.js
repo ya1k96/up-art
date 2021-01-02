@@ -48,12 +48,14 @@ $(document).ready(function(){
 
 });
 
+
  function tablaFactura(cantE, subE, cantN, subN, total, titulo, fecha, precioEsp, precioNor) {
    return `
+    <div class="columns">
+    <div class="column is-12">
         <p class="title is-5">${titulo} - <span class="subtitle is-5">${fecha}</span></p>          
-        <div class="columns">
           <div class="">
-            <table class="table liqui">
+            <table class="table is-fullwidth liqui">
             <thead class="">
               <tr>          
                 <th>Total Articulos</th>
@@ -83,6 +85,8 @@ $(document).ready(function(){
           </table>
           </div>
         </div>
+      </div>
+
      `;
 
 }
