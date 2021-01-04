@@ -2038,7 +2038,7 @@ __webpack_require__.r(__webpack_exports__);
 class ArticlesService {
     constructor(http) {
         this.http = http;
-        this.url = 'https://articulos-cargados.herokuapp.com/';
+        this.url = 'https://articulos-cargados.herokuapp.com';
     }
     articulos(pagina, cantidad) {
         return this.http.get(this.url + '/api/articulos/' + pagina + '?cantidad=' + cantidad)
