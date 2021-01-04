@@ -43,14 +43,15 @@ module.exports = function(app) {
 
     app.get('/api/lista-imagenes/:pagina', async function(req, res) {
         const pagina = req.params.pagina ? req.params.pagina : 1;
+        const cantidad = req.query.cantidad ? req.query.cantidad : 25;
+
         const options = {
             page: pagina,
-            limit: 12            
+            limit: cantidad            
         };
         
         const result = await imagenes_model.paginate({
-        }, options);
-      
+        }, options);      
 
         return res.json({
             ok: true,

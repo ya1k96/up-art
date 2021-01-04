@@ -45,7 +45,8 @@ module.exports = function(app) {
             return res.json({
                 ok: true,
                 msg: 'Autorizado',
-                token
+                token,
+                decoded: payload
             })
 
         } else {
@@ -56,7 +57,6 @@ module.exports = function(app) {
         }
 
     } catch (error) {
-        console.log(error)
         return res.json({
             ok: false,
             error

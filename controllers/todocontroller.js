@@ -70,6 +70,13 @@ app.get('/api/articulos/:pagina', async function (req, response) {
   });
 });
 
+app.get('/api/buscarArticulo',async function(req, res) {
+  const query = req.query.codigo;
+  const resp = await ItemModel.find({codigo: { $regex: query }});
+
+  return res.json({ok: true, resp});
+});
+
 app.get('/login', function(req, res) {
   const userData = {
     user: req.session.user,
@@ -232,6 +239,27 @@ app.get('/liquidar', rutas.client, async function(req,res) {
   return res.render('liquidar',{data: data, userData: userData});
 });
 
+app.get('/api/liquidar', rutas.client, async function(req,res) {
+  const articulosALiquidar = await ItemModel.find({liquidado: false});
+  const normal = articulosALiquidar.filter( item => item.tipoArticulo === 'Normal');
+  const especial = articulosALiquidar.filter( item => item.tipoArticulo === 'Especial');
+  const listaPrecios = await PrecioModel.find({});
+  const precioNormal = listaPrecios[1].precio;
+  const precioEspecial = listaPrecios[0].precio;
+
+  let data = {
+    normal: normal.length,
+    especial: especial.length, 
+    precioEspecial,
+    precioNormal 
+  };
+
+  return res.json({
+    ok: true,
+    data
+  });
+});
+
 app.get('/pedir-liquidacion', rutas.client, async function(req, res) {
   
   const articulosALiquidar = await ItemModel.find({liquidado: false});
@@ -297,7 +325,7 @@ app.get('/rollback/:id', rutas.admin, async function(req, res) {
 })
 
 //Unicamente AJAX
-app.get('/liquidacion-list', async function(req, res){
+app.get('/api/liquidacion-list', rutas.admin, async function(req, res){
   const liquidaciones = await LiquidacionModel.find({}, ['createdAt','pagado','total'])
   .populate('liquidacionDetalle')
   return res.json(liquidaciones);
