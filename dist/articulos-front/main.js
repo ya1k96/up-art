@@ -2093,7 +2093,7 @@ __webpack_require__.r(__webpack_exports__);
 class AuthService {
     constructor(http) {
         this.http = http;
-        this.url = 'http://172.17.190.65:3000';
+        this.url = 'https://articulos-cargados.herokuapp.com';
     }
     login(username, contrasena) {
         return this.http.post(this.url + '/login', {
