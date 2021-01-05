@@ -137,7 +137,7 @@ app.post('/upload-description', rutas.admin, async function(req,res) {
 })
 
 app.post('/upload', rutas.admin, async function(req,res) {
-
+  console.log(req)
   
   if( !req.files.file ) {
     return res.redirect(403,'../error-upload');
