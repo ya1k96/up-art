@@ -2,11 +2,8 @@ const fs = require('fs-extra');
 var path = require('path');
 const cloudinary = require('cloudinary');
 require('dotenv').config()
-
-const ItemModel = require('../models/items');
 const imagenes_model = require('../models/imagenes');
-const { query } = require('express');
-
+const rutas = require('../middlewares/rutasProtegidas');
 
 module.exports = function(app) {
     //TODO: Mover esta info a las variables de entorno
@@ -90,10 +87,10 @@ module.exports = function(app) {
         });
     });
 
-    app.post('/imagenes', async function(req, res) {
+    app.post('/imagenes', rutas.admin, async function(req, res) {
         //Asignamos la lista de imagenes que vienen del formulario
         let archivos = req.files.image;
-
+        console.log(archivos)
         if( archivos.length == 0 ) return res.json({ok: false, msg: 'Tienes que seleccionar archivos'});
 
         //Marcara los errores ocurridos durante la llamada a esta uri
@@ -107,7 +104,53 @@ module.exports = function(app) {
 
         if( archivos.name ) {
             //TODO: comportamiento para tratar solo una imagen
+            let ext = (path.extname(archivos.name)).toLowerCase();
+                if ( ext === '.jpg' || ext === '.jpeg' || ext  ==='.png' ) {                                                 
+                    
+                    //Configuracion de la direccion del archivos
+                    const img_path = path.join( __dirname, `../public/images/items/`, archivos.name);
 
+                    archivos.mv( img_path, async err => {       
+
+                        if(err) {
+                            errors.push({ error: 'img', msg: err });
+                        } else {
+                            //para subir con el nombre original del artchivo: { use_filename: true }
+                            const resp = await cloudinary.v2.uploader.upload(img_path, 
+                            {
+                                use_filename: true                                
+                            });
+                            
+                            //console.log(resp);
+
+                            const new_image = {
+                                code_name: resp.original_filename,
+                                img_url: resp.url,
+                                public_id: resp.public_id
+                            };
+
+                            //Borramos la imagen del directorio
+                            fs.unlink(img_path);
+
+                            try {
+                                await imagenes_model(new_image).save();        
+                                                        
+                            } catch (error) {
+                                if( error.code === 11000 ) {
+                                   //Borrar del archivo cloudinary
+                                   await cloudinary.v2.uploader.destroy(resp.public_id);
+                                  }
+                            }
+                            //El archivo se guarda en la base de datos
+                        }
+                    });
+                    
+
+                } else {
+                    
+                    mimetype_errors.push({ nombre: archivos.name });
+
+                }
         } else {           
             archivos.forEach( archivo => {
                 let ext = (path.extname(archivo.name)).toLowerCase();
@@ -159,12 +202,12 @@ module.exports = function(app) {
                 
             });            
             
-            if(mimetype_errors != 0) errors.push({ error: 'Formato invalido', archivos: mimetype_errors });
-
-            if(errors.length != 0) response.errors = errors;
-
-            return res.json(response);
         }
+        if(mimetype_errors != 0) errors.push({ error: 'Formato invalido', archivos: mimetype_errors });
+
+        if(errors.length != 0) response.errors = errors;
+
+        return res.json(response);
 
     });
 }
