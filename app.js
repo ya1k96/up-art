@@ -77,7 +77,13 @@ proveedoresController(app);
 imagenesController(app);
 
 var server = require('http').Server(app);
-var socket = require('socket.io')(server);
+var socket = require('socket.io')(server, {
+  allowEIO3: true,
+  cors: {
+    origins: 'http://localhost:*',
+  },
+  credentials: false,
+});
 
 global.io = socket;
 
