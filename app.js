@@ -11,6 +11,7 @@ const todocontroller = require('./controllers/todocontroller.js');
 const usuariocontroller = require('./controllers/usuariocontroller.js');
 const proveedoresController = require('./controllers/proveedores.js');
 const imagenesController = require('./controllers/imagenes.js');
+const mostradorController = require('./controllers/mostrador.js');
 
 const dbUser = process.env.DBUSER;
 const dbPass = process.env.DBPASS;
@@ -22,6 +23,7 @@ const db = mongoose.connection;
 //Conexion a la base de datos
 
 var app = express();
+
 var urlencodedparser = bodyparser.urlencoded({ extended: true}); // ??
 
 db.once("open", function(){
@@ -68,15 +70,21 @@ app.get('/', async function (request, response) {
 
 });
 
-
 //controladores
 todocontroller(app);
 usuariocontroller(app);
 proveedoresController(app);
 imagenesController(app);
 
+var server = require('http').Server(app);
+var socket = require('socket.io')(server);
+
+global.io = socket;
+
+mostradorController(io);
+
 // Listen to port
 
 var port_number = (process.env.PORT || 3000);
-app.listen(port_number);
+server.listen(port_number);
 console.log("Your Listening to the port", port_number)

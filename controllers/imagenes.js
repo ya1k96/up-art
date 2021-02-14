@@ -44,7 +44,7 @@ module.exports = function(app) {
 
         const options = {
             page: pagina,
-            limit: cantidad            
+            limit: cantidad,
         };
         
         const result = await imagenes_model.paginate({
@@ -90,7 +90,6 @@ module.exports = function(app) {
     app.post('/imagenes', rutas.admin, async function(req, res) {
         //Asignamos la lista de imagenes que vienen del formulario
         let archivos = req.files.image;
-        console.log(archivos)
         if( archivos.length == 0 ) return res.json({ok: false, msg: 'Tienes que seleccionar archivos'});
 
         //Marcara los errores ocurridos durante la llamada a esta uri
