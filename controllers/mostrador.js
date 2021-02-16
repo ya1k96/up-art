@@ -1,17 +1,25 @@
 require('dotenv').config()
-const imagenes_model = require('../models/imagenes');
+const pantallasModel = require('../models/pantallas');
 
 module.exports = (io) => {
-    io.once('connection', function(socket) {
-        console.log('conectado sockets');
+    let pantalla = io.of('/pantalla');
+    
+    pantalla.on('connection', (client) => {
 
-    });
-    io.of('/mostrador', function(mostradorIO) {
-        mostradorIO.once('connection', function(client) {
-            console.log('Cliente conectado');
+        client.on('articulo', (socket) => {
+            let articulo = socket.articulo;
+            client.to(articulo.client_id).emit('mostrarArticulo', {articulo});
+        });
+
+        client.on('login', async (socket) => {
+            let user = socket.user;
+            await (new pantallasModel({client_id: client.id, usuario: user})).save();
         })
 
-    })
-
+        client.on('disconnect', async (socket) => { 
+            await pantallasModel.deleteOne({ client_id: client.id });
+        });
+    });
+    
 
 }

@@ -479,7 +479,7 @@ module.exports = content.locals || {};
 
 /***/ }),
 
-/***/ 3:
+/***/ 2:
 /*!*************************************************************************************************!*\
   !*** multi ./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css ./src/styles.css ***!
   \*************************************************************************************************/
@@ -492,5 +492,5 @@ module.exports = __webpack_require__(/*! C:\Users\yamil\Documents\Desarrollo web
 
 /***/ })
 
-},[[3,"runtime"]]]);
+},[[2,"runtime"]]]);
 //# sourceMappingURL=styles.js.map

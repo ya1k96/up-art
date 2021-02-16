@@ -3026,7 +3026,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 2:
+/***/ 1:
 /*!********************************!*\
   !*** multi ./src/polyfills.ts ***!
   \********************************/
@@ -3038,5 +3038,5 @@ module.exports = __webpack_require__(/*! C:\Users\yamil\Documents\Desarrollo web
 
 /***/ })
 
-},[[2,"runtime"]]]);
+},[[1,"runtime"]]]);
 //# sourceMappingURL=polyfills.js.map

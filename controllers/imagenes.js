@@ -3,6 +3,7 @@ var path = require('path');
 const cloudinary = require('cloudinary');
 require('dotenv').config()
 const imagenes_model = require('../models/imagenes');
+const pantallas_model = require('../models/pantallas');
 const rutas = require('../middlewares/rutasProtegidas');
 
 module.exports = function(app) {
@@ -12,6 +13,12 @@ module.exports = function(app) {
         api_key:"991531246991727",
         api_secret: "NKO2N9cc_vGo_tgTNHC2NPyuzSA"
     });    
+
+    app.get('/api/getPantallas', async function(req, res) {
+        return res.json({
+            pantallas: await pantallas_model.find()
+        });
+    });
 
     app.get('/imagenes', async function(req, res) {
         const userData = {
