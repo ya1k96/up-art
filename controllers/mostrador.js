@@ -13,11 +13,14 @@ module.exports = (io) => {
 
         client.on('login', async (socket) => {
             let user = socket.user;
-            await (new pantallasModel({client_id: client.id, usuario: user})).save();
+            let pantalla = await (new pantallasModel({client_id: client.id, usuario: user})).save();
+            
+            client.broadcast.emit('nuevaPantalla', pantalla);
         })
 
         client.on('disconnect', async (socket) => { 
             await pantallasModel.deleteOne({ client_id: client.id });
+            client.broadcast.emit('pantallaEliminada', client.id);
         });
     });
     
