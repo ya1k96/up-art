@@ -2561,7 +2561,7 @@ class MostrarService {
     constructor() {
         this.pantallasEvent$ = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
         this.pantallasConectadas = [];
-        this.socket = Object(socket_io_client__WEBPACK_IMPORTED_MODULE_1__["io"])('https://up-articulos.herokuapp.com//pantalla');
+        this.socket = Object(socket_io_client__WEBPACK_IMPORTED_MODULE_1__["io"])('https://up-articulos.herokuapp.com/pantalla');
     }
     conectar() {
         this.socket.connect();
@@ -2626,7 +2626,7 @@ __webpack_require__.r(__webpack_exports__);
 class PantallaService {
     constructor() {
         this.articuloMostrar$ = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-        this.socket = Object(socket_io_client__WEBPACK_IMPORTED_MODULE_2__["io"])('https://up-articulos.herokuapp.com//pantalla');
+        this.socket = Object(socket_io_client__WEBPACK_IMPORTED_MODULE_2__["io"])('https://up-articulos.herokuapp.com/pantalla');
         this.conectar();
     }
     conectar() {
