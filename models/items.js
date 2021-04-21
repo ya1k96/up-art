@@ -8,10 +8,15 @@ var articuloSchema = new mongoose.Schema({
     },
     imagen: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'imagenes'
+      ref: 'imagenes',
+      default: null
     },
     fecha: {
       type: String,    
+    },
+    hecho: {
+      type: Boolean,
+      default: true
     },
     tipoArticulo: {
       type: String,
@@ -28,6 +33,10 @@ var articuloSchema = new mongoose.Schema({
     actualizado: {
       type: Boolean,
       default: false
+    },
+    category: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'category'
     }
   });
   articuloSchema.plugin(mongoosePaginate);

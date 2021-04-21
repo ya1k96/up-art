@@ -1,7 +1,8 @@
 const csvtojsonV2=require("csvtojson");
 const ItemModel = require('../models/items');
 const LogModel = require('../models/logs');
-const PrecioModel = require('../models/precio');
+const PrecioModel = require('../models/precio'); 
+const CategoryModel = require('../models/categories'); 
 const LiquidacionModel = require('../models/liquidacion');
 const LiquidacionDetalle = require("../models/liquidacionDetalle");
 const moment = require('moment');
@@ -45,19 +46,27 @@ module.exports = function(app) {
 app.get('/api/articulos/:pagina', async function (req, response) {
     const pagina = req.params.pagina ? req.params.pagina : 1;
     const cantidad = req.query.cantidad ? req.query.cantidad : 25;
+    const categoria = req.query.categoria;
+
     const options = {
         page: pagina,
-        limit: cantidad            
+        limit: cantidad
     };
     const userData = {
       user: req.session.user,
       role: req.session.role,
       logged: req.session.logged         
     };
-
   // obtenemos los articulos de db
-  const doc = await ItemModel.paginate({}, options );
-
+  let doc; 
+  
+  if( categoria !== 'undefined') {
+    doc = await ItemModel.paginate({category: categoria}, options );
+  } else {
+    doc = await ItemModel.paginate({}, options );
+  }
+  const categorias = await CategoryModel.find({});
+  //Buscamos en orden descendente el primer record
   let lastUpdate = (await LogModel.find({}).sort({fecha: -1}))[0];
   //formateamos la fecha para hacerla legible
   let momentFecha = moment(lastUpdate.fecha).fromNow();
@@ -66,7 +75,8 @@ app.get('/api/articulos/:pagina', async function (req, response) {
   return response.json({
     ok: true,
     items: info,
-    userData
+    userData,
+    categorias
   });
 });
 
@@ -85,6 +95,56 @@ app.get('/login', function(req, res) {
   };
 
   return res.render('login', {userData: userData});
+})
+app.post('/upload-category', async function(req,res) {
+
+  
+  if( !req.files.file ) {
+    return res.redirect(403,'../error-upload');
+  }
+
+  let archivo = req.files.file;
+  //Guardamos el tipo de archivo para corroborar
+  let mimetype = archivo.name;
+
+  if(!mimetype.includes('csv')) {
+    //Error de tipo
+    return res.status(401).json({
+      msg: "Este tipo de archivo no esta permitido"
+    })
+  }
+
+  const pathcsv = `./public/files/${archivo.name}`;
+  archivo.mv(pathcsv,err => {
+    if(err) return res.status(500).json({ ok:false, msg: err });
+  })
+
+  const lista = await csvtojsonV2().fromFile(pathcsv);
+  let codigoAux;
+  if(lista.length > 0) {
+
+     lista.forEach( async function(item) {       
+       //Buscamos el item
+       const itemDB = await ItemModel.find({codigo: item.codigo});
+       //Nos aseguramos de que el item se encuentra en la base de datos
+       if( itemDB.length === 1) {
+         //Guardamos la nueva categoria del item
+         categoryName = (await CategoryModel.findOne({name: item.category}));
+         if(! categoryName ) {
+          categoryName = await CategoryModel({name: item.category}).save();
+         }
+           itemDB[0].category = categoryName._id;
+           await itemDB[0].save();        
+         }
+      })
+
+      let resp = {ok: true, msg:'Tus datos fueron cargados'};
+
+      
+    } else {
+      return res.json({ok: false, msg: "El documento esta vacio"})
+    }
+    return res.json({ok: true, msg: 'Cargado'});
 })
 
 app.post('/upload-description', rutas.admin, async function(req,res) {
@@ -136,8 +196,8 @@ app.post('/upload-description', rutas.admin, async function(req,res) {
     return res.json({ok: true, msg: 'Cargado'});
 })
 
+
 app.post('/upload', rutas.admin, async function(req,res) {
-  console.log(req)
   
   if( !req.files.file ) {
     return res.redirect(403,'../error-upload');

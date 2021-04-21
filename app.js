@@ -9,9 +9,9 @@ const path = require('path');
 //Controladores
 const todocontroller = require('./controllers/todocontroller.js');
 const usuariocontroller = require('./controllers/usuariocontroller.js');
-const proveedoresController = require('./controllers/proveedores.js');
 const imagenesController = require('./controllers/imagenes.js');
 const mostradorController = require('./controllers/mostrador.js');
+const itemsController = require('./controllers/articulos.js');
 
 const dbUser = process.env.DBUSER;
 const dbPass = process.env.DBPASS;
@@ -73,8 +73,8 @@ app.get('/', async function (request, response) {
 //controladores
 todocontroller(app);
 usuariocontroller(app);
-proveedoresController(app);
 imagenesController(app);
+itemsController(app);
 
 var server = require('http').Server(app);
 var socket = require('socket.io')(server, {

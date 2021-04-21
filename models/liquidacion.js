@@ -10,7 +10,12 @@ var liquidacionSchema = new mongoose.Schema({
       type: Boolean,
       default: null
     },
-    total: String
+    total: String,
+    articulos: [
+      {
+        type: mongoose.Schema.ObjectId, ref:"items"
+      }
+    ]
   },{ timestamps: true });
 
   module.exports = mongoose.model('liquidacion', liquidacionSchema);
