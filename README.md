@@ -1,30 +1,12 @@
-# Sample Application
+# Presentacion
+## Contexto
+Trabajo para una empresa que necesita acualizar su catalogo de imagenes, al ser mas de 10 mil articulos me di a la labor (por oficio) de encontrar una forma de presentar control y profesionalismo.
 
-The main aim of developing this application is to explore the working of nodejs and expressjs.
+# Descripcion
+El Frontend esta construido con Angular, usando como framework CSS BULMA. 
+El Backend es una combinacion de NodeJS y Express.
+La base de datos esta contruida con MongoDB y utilizo la libreria mongoose para definir modelos, etc.
+La aplicacion hace uso de Sockets para la funcion de mostrador.
+Por ultimo, la app tambien se instala en movil como en pc gracias al uso de las PWA. 
 
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine.
-
-### Prerequisites
-
-Below steps are needed only for the first time when you setup your dev machine
-
-Install node.js server from https://nodejs.org/en/download/
-
-### Installing
-
-1. Clone this git repository, if you haven't done already.
-
-   `git clone https://github.com/cmevawala/nodejs-todo-app.git`
-
-2. Install local npm dependencies
-
-   `npm install`
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Built With
-
-* [Node](https://nodejs.org/en/) - JavaScript runtime built on Chrome's V8 JavaScript engine
-* [Express](https://expressjs.com/) - Node.js web application framework
+link a la pagina: https://up-articulos.herokuapp.com/
