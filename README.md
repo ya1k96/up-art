@@ -9,4 +9,12 @@ La base de datos esta contruida con MongoDB y utilizo la libreria mongoose para 
 La aplicacion hace uso de Sockets para la funcion de mostrador.
 Por ultimo, la app tambien se instala en movil como en pc gracias al uso de las PWA. 
 
-link a la pagina: https://up-articulos.herokuapp.com/
+# Principales funciones
+- Recibir un archivo .csv para suministrar la base de datos.
+- Carga de imagenes para control, estas se cargan por unidad o en lote.
+- Adicionalmente las imagenes pueden ser transmitidas a un receptor que actue como "mostrador".
+- Reporte imprimible con la liquidacion de articulos (para cobrar).
+- Lista completa de articulos cargados.
+- Funcion de Logeo para evitar intrusos.
+
+link del proyecto desplegado: https://up-articulos.herokuapp.com/
