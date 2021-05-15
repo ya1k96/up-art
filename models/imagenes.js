@@ -7,6 +7,10 @@ var imgSchema = new mongoose.Schema({
         type: String,
         unique: true        
     },
+    muestra: {
+        type: Boolean,
+        default: false
+    },
     img_url: {
         required: true,
         type: String
@@ -15,11 +19,29 @@ var imgSchema = new mongoose.Schema({
         type: String,
         requried: true
     },
-    comentario: {
-        type: String
-    },
+    observaciones: [{
+      type: mongoose.Schema.ObjectId,
+      ref: 'observacion'
+    }],
     descripcion: {
         type: String
+    },
+    tipo_articulo: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'tipo_articulos',
+        default: '608b4bc62cbad9ca7034af1d'
+    },
+    aprobado: {
+        type: Boolean,
+        default: null
+    },
+    liquidado: {
+        type: Boolean,
+        default: false
+    },
+    visto: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 

@@ -5,6 +5,7 @@ require('dotenv').config()
 const imagenes_model = require('../models/imagenes');
 const pantallas_model = require('../models/pantallas');
 const rutas = require('../middlewares/rutasProtegidas');
+const observacion = require('../models/observacion');
 
 module.exports = function(app) {
     //TODO: Mover esta info a las variables de entorno
@@ -63,6 +64,49 @@ module.exports = function(app) {
         });
     });
 
+    app.get('/api/lista-corregir/:pagina', async (req,res) => {
+        const pagina = req.params.pagina ? req.params.pagina : 1;
+        const cantidad = req.query.cantidad ? req.query.cantidad : 25;
+
+        const options = {
+            page: pagina,
+            limit: cantidad,
+        };
+        
+        const result = await imagenes_model.paginate({
+            aprobado: false
+        }, options);      
+
+        return res.json({
+            ok: true,
+            result
+        });
+    });
+
+    app.get('/api/imagen-corregir-detalle/:id', async (req, res) => {
+        const id = req.params.id;
+
+        if( !id ) {
+            return res.json({
+                ok: false,
+                msg: 'Debes proveer un id correcto.'
+            });
+        }
+
+        const result = await imagenes_model.findById(id).populate({
+            path: 'observaciones',
+            populate: { 
+                path: 'img_muestra',
+                populate: 'imagenes' 
+            }
+        });
+
+        return res.json({
+            ok: true,
+            result
+        })
+    });
+
     app.get('/api/buscar-imagen', async function(req, res) {
         const query = req.query.keyword;
 
@@ -77,6 +121,7 @@ module.exports = function(app) {
 
     });
 
+
     app.get('/api/imagen/:id', async (req, res) => {
         const id = req.params.id;
         if( !id ) {
@@ -86,11 +131,11 @@ module.exports = function(app) {
             });
         }
 
-        const resp = await imagenes_model.find({"code_name": id});
+        const resp = await imagenes_model.findOne({"_id": id});
 
         return res.json({
             ok: true,
-            imagen: resp
+            data: resp
         });
     });
 
@@ -209,6 +254,91 @@ module.exports = function(app) {
             });            
             
         }
+        if(mimetype_errors != 0) errors.push({ error: 'Formato invalido', archivos: mimetype_errors });
+
+        if(errors.length != 0) response.errors = errors;
+
+        return res.json(response);
+
+    });
+    
+    app.post('/api/muestra-imagen/:id', rutas.admin, async function(req, res) {
+        const id = req.params.id;
+        const comentario = req.body.comentario;
+        const autor = req.body.autor;
+
+       
+        // return res.json({oki: 'no'});
+        
+        let articuloRevisado = await imagenes_model.findById(id);
+        if(!articuloRevisado) {
+            return res.json({ok: false, msg: 'El articulo no existe en la base de datos.'});
+        }
+
+        //Asignamos la lista de imagenes que vienen del formulario
+        let archivos = req.files.file;
+        if( !archivos ) return res.json({ok: false, msg: 'Tienes que seleccionar un archivo'});
+
+        //Marcara los errores ocurridos durante la llamada a esta uri
+        let errors = [];
+        let mimetype_errors = [];
+
+        //Respuesta para la solicitud, posteriormente se completa agragando leyendas y/o modificando su contenido
+        let response = {
+            ok: true                
+        };
+        //TODO: comportamiento para tratar solo una imagen
+        let ext = (path.extname(archivos.name)).toLowerCase();
+        if ( ext === '.jpg' || ext === '.jpeg' || ext  ==='.png' ) {                                                 
+            
+            //Configuracion de la direccion del archivos
+            const img_path = path.join( __dirname, `../public/images/corregidos/`, archivos.name);
+
+            archivos.mv( img_path, async (err) => {  
+                if(err) {
+                    errors.push({ok: false, msg:'ocurrio un error'})
+                }
+                const resp = await cloudinary.v2.uploader.upload(img_path);
+                    const new_image = {
+                        code_name: resp.asset_id,
+                        img_url: resp.url,
+                        public_id: resp.public_id,
+                        muestra: true
+                    };
+
+                    //Borramos la imagen del directorio
+                    fs.unlink(img_path);
+
+                    try {
+                        //almacenamos la imagen muestra
+                        let nuevaImagen = await imagenes_model(new_image).save();                            
+                        //Creamos una observacion
+                        let nuevaObservacion = await observacion({
+                            comentario: comentario,
+                            img_muestra: nuevaImagen._id,
+                            autor: autor
+                        }).save();
+                        //asignamos y guardamos la nueva lista de observaciones 
+                        articuloRevisado.aprobado = false;
+                        articuloRevisado.observaciones.push(nuevaObservacion._id);
+                        await articuloRevisado.save();
+                    } catch (error) {    
+                        console.log(error)                    
+                        if( error.code === 11000 ) {
+                           //Borrar del archivo cloudinary
+                           await cloudinary.v2.uploader.destroy(resp.public_id);
+                          }
+                    }
+
+            });
+            
+
+        } else {
+            
+            mimetype_errors.push({ nombre: archivos.name });
+
+        }
+
         if(mimetype_errors != 0) errors.push({ error: 'Formato invalido', archivos: mimetype_errors });
 
         if(errors.length != 0) response.errors = errors;

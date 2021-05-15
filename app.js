@@ -17,7 +17,11 @@ const dbUser = process.env.DBUSER;
 const dbPass = process.env.DBPASS;
 const urlDB  = process.env.DBURL
 const urlMongo = 'mongodb://'+ dbUser + ':'+ dbPass + urlDB; 
-mongoose.connect(urlMongo,{ useMongoClient: true });
+const settingsMongo = {
+  reconnectTries : Number.MAX_VALUE,
+  autoReconnect : true
+};
+mongoose.connect(urlMongo, settingsMongo,{ useMongoClient: true });
 
 const db = mongoose.connection;
 //Conexion a la base de datos

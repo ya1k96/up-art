@@ -1,8 +1,7 @@
 const csvtojsonV2=require("csvtojson");
-const ItemModel = require('../models/items');
 const LogModel = require('../models/logs');
-const PrecioModel = require('../models/precio'); 
 const CategoryModel = require('../models/categories'); 
+const TipoArticuloModel = require('../models/tipo_articulos'); 
 const LiquidacionModel = require('../models/liquidacion');
 const LiquidacionDetalle = require("../models/liquidacionDetalle");
 const moment = require('moment');
@@ -11,36 +10,49 @@ const path = require('path');
 //midleware 
 const rutas = require('../middlewares/rutasProtegidas');
 const imagenes = require("../models/imagenes");
+const ArticulosModel = require("../models/articulos");
+const articulos = require("../models/articulos");
 moment.locale('es-es');
+const observacion = require('../models/observacion');
 
 module.exports = function(app) {
 
-// app.get('/asoc', async (req, res) => {
-//   const items = await ItemModel.find({});
-//   items.forEach(async el => { 
-//     const auxName = el.codigo.split(' ');
-//     let nameQuery = '';
+app.get('/api/control', async (req, res) => {
+  const lista = await imagenes.find({});
+  return res.json({
+    ok: true,
+    lista
+  });
+});
 
-//     if(auxName.length > 0) {
-//       for (let index = 0; index < auxName.length; index++) {
-//         nameQuery += auxName[index] + (index === auxName.length ? '' : '-');
-        
-//       }
+app.post('/api/revol', async function(req,res) {
+
+  const lista =  await articulos.find({});
+
+  let codigoAux;
+  if(lista.length > 0) {
+
+     lista.forEach( async function(item) {
+       codigoAux = (item.codigo.split(' ')).join('-');
+       codigoAux = (codigoAux.split('/')).join('-');
+       //Buscamos el item
+       const itemImgDB = await imagenes.find({code_name: codigoAux});
+       //Nos aseguramos de que el item se encuentra en la base de datos
+         if( itemImgDB.length === 1) {
+           //Guardamos la nueva descripcion del item
+           itemImgDB[0].descripcion = item.descripcion;
+           await itemImgDB[0].save();        
+         }
+      })
+
+      let resp = {ok: true, msg:'Tus datos fueron cargados'};
+
       
-//     }
-
-//     let img = await ImagenesModel.find({code_name: ''});
-
-//     if( img.length === 1 ) {
-//       el.imagen = img[0]._id;
-//       await el.save();
-//     }
-//    })
-//     res.json({
-//       ok: true
-//     })
-// });
-
+    } else {
+      return res.json({ok: false, msg: "El documento esta vacio"})
+    }
+    return res.json({ok: true, msg: 'Cargado'});
+})
 
 
 app.get('/api/articulos/:pagina', async function (req, response) {
@@ -61,9 +73,9 @@ app.get('/api/articulos/:pagina', async function (req, response) {
   let doc; 
   
   if( categoria !== 'undefined') {
-    doc = await ItemModel.paginate({category: categoria}, options );
+    doc = await ArticulosModel.paginate({category: categoria}, options );
   } else {
-    doc = await ItemModel.paginate({}, options );
+    doc = await ArticulosModel.paginate({}, options );
   }
   const categorias = await CategoryModel.find({});
   //Buscamos en orden descendente el primer record
@@ -277,7 +289,7 @@ app.get('/liquidar', rutas.client, async function(req,res) {
   const articulosALiquidar = await ItemModel.find({liquidado: false});
   const normal = articulosALiquidar.filter( item => item.tipoArticulo === 'Normal');
   const especial = articulosALiquidar.filter( item => item.tipoArticulo === 'Especial');
-  const listaPrecios = await PrecioModel.find({});
+  const listaPrecios = await TipoArticuloModel.find({});
   const precioNormal = listaPrecios[1].precio;
   const precioEspecial = listaPrecios[0].precio;
 

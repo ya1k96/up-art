@@ -1,5 +1,4 @@
 const CategoriasModel = require('../models/categories');
-const ItemModel = require('../models/items');
 const csvtojsonV2 = require("csvtojson");
 
 module.exports = (app) => {
